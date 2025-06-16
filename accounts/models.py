@@ -65,3 +65,19 @@ class Category(models.Model):
         return self.name
 
 Recipe.add_to_class('categories', models.ManyToManyField(Category, blank=True, related_name='recipes'))
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes', db_index=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='likes', db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        unique_together = ('user', 'recipe')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'recipe']),
+            models.Index(fields=['created_at']),
+        ]
+
+    def __str__(self):
+        return f'{self.user.username} likes {self.recipe.title}'
