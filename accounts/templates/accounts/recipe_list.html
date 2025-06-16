@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}Рецепты{% endblock %}
+
+{% block content %}
+<div class="recipes-container">
+    <h1 class="recipes-header">Коллекция рецептов</h1>
+    
+    <div class="recipes-grid">
+        {% for recipe in recipes %}
+        <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-card-link">
+            <div class="recipe-card">
+                {% if recipe.image %}
+                <div class="recipe-image-wrapper">
+                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe-image">
+                </div>
+                {% endif %}
+                
+                <div class="recipe-content">
+                    <h2 class="recipe-title">{{ recipe.title }}</h2>
+                    
+                    {% if recipe.description %}
+                    <p class="recipe-description">{{ recipe.description|truncatechars:100 }}</p>
+                    {% endif %}
+                    
+                    <div class="recipe-meta">
+                        <span class="meta-author">@{{ recipe.author.username|default:recipe.author.email }}</span>
+                        <span class="meta-date">{{ recipe.created_at|date:"d M Y" }}</span>
+                    </div>
+                    
+                    <div class="recipe-stats">
+                        <span class="stat-item">⏱️ {{ recipe.prep_time|default:"-" }} мин</span>
+                        <span class="stat-item">🔥 {{ recipe.cook_time|default:"-" }} мин</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="empty-state">
+            <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" alt="No recipes" width="120">
+            <p>Пока нет рецептов. Будьте первым!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .recipes-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    
+    .recipes-header {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2d3436;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        background: linear-gradient(90deg, #e17055, #0984e3);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .recipes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .recipe-card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .recipe-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .recipe-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 20px rgba(0,0,0,0.12);
+    }
+    
+    .recipe-image-wrapper {
+        height: 180px;
+        overflow: hidden;
+    }
+    
+    .recipe-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .recipe-card:hover .recipe-image {
+        transform: scale(1.03);
+    }
+    
+    .recipe-content {
+        padding: 1.25rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .recipe-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        color: #2d3436;
+        line-height: 1.3;
+    }
+    
+    .recipe-description {
+        color: #636e72;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+    }
+    
+    .recipe-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-top: auto;
+        font-size: 0.8rem;
+        color: #b2bec3;
+    }
+    
+    .meta-author {
+        font-weight: 500;
+        color: #0984e3;
+    }
+    
+    .recipe-stats {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid #f0f0f0;
+        font-size: 0.85rem;
+    }
+    
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+    
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 3rem 0;
+    }
+    
+    .empty-state img {
+        opacity: 0.7;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+        color: #636e72;
+        font-size: 1.1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .recipes-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .recipes-header {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,287 @@
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-brand">
+            <a href="/" class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span class="logo-text">CookMaster</span>
+            </a>
+        </div>
+        
+        <ul class="nav-menu">
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a href="{% url 'dashboard' %}" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                        <span class="nav-text">Профиль</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'recipe_list' %}" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M3 3h18v18H3zM8 8h8v8H8z"/>
+                        </svg>
+                        <span class="nav-text">Рецепты</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'recipe_create' %}" class="nav-link highlight">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                        <span class="nav-text">Новый рецепт</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'logout' %}" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                        </svg>
+                        <span class="nav-text">Выйти</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a href="{% url 'login' %}" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                        </svg>
+                        <span class="nav-text">Вход</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'register' %}" class="nav-link highlight">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 8v6M23 11h-6"/>
+                        </svg>
+                        <span class="nav-text">Регистрация</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        
+        <!-- Мобильное меню -->
+        <button class="hamburger">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </button>
+    </div>
+</nav>
+
+<style>
+    :root {
+        --primary: #FF6B6B;
+        --primary-dark: #FF5252;
+        --secondary: #4ECDC4;
+        --light: #F7FFF7;
+        --dark: #292F36;
+        --gray: #6B7280;
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    
+    .navbar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .navbar-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0.8rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .navbar-brand {
+        display: flex;
+        align-items: center;
+    }
+    
+    .logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        font-weight: 700;
+        color: var(--dark);
+        transition: var(--transition);
+    }
+    
+    .logo:hover {
+        color: var(--primary);
+    }
+    
+    .logo-icon {
+        width: 24px;
+        height: 24px;
+        fill: var(--primary);
+        margin-right: 10px;
+    }
+    
+    .logo-text {
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+    
+    .nav-menu {
+        display: flex;
+        gap: 0.5rem;
+        list-style: none;
+    }
+    
+    .nav-item {
+        position: relative;
+    }
+    
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--gray);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        font-size: 0.95rem;
+    }
+    
+    .nav-link:hover {
+        color: var(--dark);
+        background: rgba(0, 0, 0, 0.03);
+    }
+    
+    .nav-link.highlight {
+        background: var(--primary);
+        color: white;
+    }
+    
+    .nav-link.highlight:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    }
+    
+    .nav-icon {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+    }
+    
+    /* Анимация бургер-меню */
+    .hamburger {
+        display: none;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 10px;
+        z-index: 1001;
+    }
+    
+    .hamburger-box {
+        width: 24px;
+        height: 24px;
+        display: inline-block;
+        position: relative;
+    }
+    
+    .hamburger-inner {
+        width: 100%;
+        height: 2px;
+        background-color: var(--dark);
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: var(--transition);
+    }
+    
+    .hamburger-inner::before,
+    .hamburger-inner::after {
+        content: "";
+        width: 100%;
+        height: 2px;
+        background-color: var(--dark);
+        position: absolute;
+        left: 0;
+        transition: var(--transition);
+    }
+    
+    .hamburger-inner::before {
+        top: -8px;
+    }
+    
+    .hamburger-inner::after {
+        top: 8px;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .navbar-container {
+            padding: 0.8rem 1.5rem;
+        }
+        
+        .hamburger {
+            display: block;
+        }
+        
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            flex-direction: column;
+            padding: 6rem 2rem 2rem;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+            transition: right 0.4s ease;
+        }
+        
+        .nav-menu.active {
+            right: 0;
+        }
+        
+        .nav-item {
+            margin: 0.5rem 0;
+        }
+        
+        .nav-link {
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+        }
+        
+        .hamburger.active .hamburger-inner {
+            background-color: transparent;
+        }
+        
+        .hamburger.active .hamburger-inner::before {
+            transform: translateY(8px) rotate(45deg);
+        }
+        
+        .hamburger.active .hamburger-inner::after {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    });
+</script>

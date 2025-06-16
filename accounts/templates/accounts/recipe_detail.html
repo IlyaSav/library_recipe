@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+<div class="recipe-detail-container">
+    <div class="recipe-card">
+        <h1 class="recipe-title">{{ recipe.title }}</h1>
+        
+        {% if recipe.image %}
+        <div class="recipe-image-container">
+            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe-image" style="max-width: 100%; height: auto; object-fit: contain;">
+        </div>
+        {% endif %}
+        
+        <!-- Остальной контент остается без изменений -->
+        {% if recipe.description %}
+        <p class="recipe-description">{{ recipe.description }}</p>
+        {% endif %}
+        
+        <div class="recipe-meta-info">
+            {% if recipe.prep_time %}
+            <div class="meta-item">
+                <span class="meta-icon">⏱️</span>
+                <span>Подготовка: {{ recipe.prep_time }} мин</span>
+            </div>
+            {% endif %}
+            
+            {% if recipe.cook_time %}
+            <div class="meta-item">
+                <span class="meta-icon">🔥</span>
+                <span>Приготовление: {{ recipe.cook_time }} мин</span>
+            </div>
+            {% endif %}
+            
+            {% if recipe.categories.all %}
+            <div class="meta-item">
+                <span class="meta-icon">🏷️</span>
+                <span>
+                    Категории: 
+                    {% for category in recipe.categories.all %}
+                        {{ category.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="recipe-section">
+            <h2 class="section-title">Ингредиенты</h2>
+            <div class="ingredients-list">{{ recipe.ingredients|linebreaks }}</div>
+        </div>
+        
+        <div class="recipe-section">
+            <h2 class="section-title">Инструкция</h2>
+            <ol class="instructions-list">
+                {% for step in recipe.instructions.splitlines %}
+                    {% if step.strip %}
+                    <li class="instruction-step">{{ step.strip }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </div>
+        
+        <div class="recipe-footer">
+            <div class="author-info">
+                <span class="author-label">Автор:</span>
+                <span class="author-name">{{ recipe.author.email }}</span>
+                <span class="creation-date">{{ recipe.created_at|date:"d.m.Y H:i" }}</span>
+            </div>
+            
+            <a href="{% url 'recipe_list' %}" class="back-link">← Вернуться к списку рецептов</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .recipe-detail-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    .recipe-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    
+    .recipe-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3436;
+        margin-bottom: 1rem;
+    }
+    
+    .recipe-image-container {
+        margin: 1.5rem 0;
+        text-align: center; /* Центрируем изображение */
+        max-height: none; /* Убираем ограничение высоты */
+    }
+    
+    .recipe-image {
+        max-width: 100%;
+        height: auto;
+        display: inline-block; /* Для центрирования */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .recipe-description {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #636e72;
+        margin-bottom: 1.5rem;
+    }
+    
+    .recipe-meta-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        color: #636e72;
+    }
+    
+    .meta-icon {
+        font-size: 1rem;
+    }
+    
+    .recipe-section {
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #e17055;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .ingredients-list {
+        white-space: pre-wrap;
+        line-height: 1.8;
+        padding-left: 1rem;
+    }
+    
+    .instructions-list {
+        padding-left: 1.5rem;
+    }
+    
+    .instruction-step {
+        margin-bottom: 0.8rem;
+        line-height: 1.6;
+        padding-left: 0.5rem;
+    }
+    
+    .recipe-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #f0f0f0;
+    }
+    
+    .author-info {
+        font-size: 0.9rem;
+        color: #b2bec3;
+    }
+    
+    .author-label {
+        margin-right: 0.3rem;
+    }
+    
+    .author-name {
+        margin-right: 1rem;
+    }
+    
+    .back-link {
+        color: #0984e3;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+    
+    .back-link:hover {
+        color: #074b83;
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .recipe-card {
+            padding: 1.5rem;
+        }
+        
+        .recipe-title {
+            font-size: 1.8rem;
+        }
+        
+        .recipe-footer {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .recipe-image {
+            width: auto; /* Для мобильных - сохраняем оригинальную ширину */
+            max-width: 100%; /* Но не больше ширины контейнера */
+        }
+    }
+</style>
+{% endblock %}
