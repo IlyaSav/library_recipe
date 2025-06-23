@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User, Recipe
+from .models import User, Recipe, Comment, Article
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True, label='Email')
@@ -13,12 +13,119 @@ class UserLoginForm(AuthenticationForm):
     username = forms.EmailField(label='Email')
 
 class RecipeForm(forms.ModelForm):
+    title = forms.CharField(
+        label='Название рецепта',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите название рецепта'
+        })
+    )
+    
+    description = forms.CharField(
+        label='Описание',
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Опишите ваш рецепт'
+        })
+    )
+    
+    ingredients = forms.CharField(
+        label='Ингредиенты',
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 5,
+            'placeholder': 'Введите каждый ингредиент с новой строки\nНапример:\n- 200г муки\n- 2 яйца\n- 100мл молока'
+        })
+    )
+    
+    steps = forms.CharField(
+        label='Шаги приготовления',
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 7,
+            'placeholder': 'Введите каждый шаг с новой строки\nНапример:\n1. Смешать сухие ингредиенты\n2. Добавить яйца и молоко\n3. Замесить тесто'
+        })
+    )
+    
+    prep_time = forms.IntegerField(
+        label='Время подготовки (минут)',
+        min_value=0,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Например: 15'
+        })
+    )
+    
+    cook_time = forms.IntegerField(
+        label='Время приготовления (минут)',
+        min_value=0,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Например: 30'
+        })
+    )
+    
+    image = forms.ImageField(
+        label='Фото блюда',
+        required=False,
+        widget=forms.FileInput(attrs={
+            'class': 'form-control',
+            'accept': 'image/*'
+        })
+    )
+    
+    categories = forms.ModelMultipleChoiceField(
+        label='Категории',
+        queryset=Recipe.categories.field.related_model.objects.all(),
+        widget=forms.SelectMultiple(attrs={
+            'class': 'form-select',
+            'size': '5'
+        })
+    )
+
     class Meta:
         model = Recipe
         fields = ['title', 'description', 'ingredients', 'steps', 'prep_time', 'cook_time', 'image', 'categories']
+
+    def clean_ingredients(self):
+        ingredients = self.cleaned_data['ingredients']
+        # Разбиваем на строки и удаляем пустые строки
+        ingredients_list = [ing.strip() for ing in ingredients.split('\n') if ing.strip()]
+        if not ingredients_list:
+            raise forms.ValidationError('Добавьте хотя бы один ингредиент')
+        return ingredients
+
+    def clean_steps(self):
+        steps = self.cleaned_data['steps']
+        # Разбиваем на строки и удаляем пустые строки
+        steps_list = [step.strip() for step in steps.split('\n') if step.strip()]
+        if not steps_list:
+            raise forms.ValidationError('Добавьте хотя бы один шаг приготовления')
+        return steps
+
+    def save(self, commit=True):
+        recipe = super().save(commit=commit)
+        return recipe
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text', 'rating']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 3}),
-            'ingredients': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Введите каждый продукт с новой строки'}),
-            'steps': forms.Textarea(attrs={'rows': 7, 'placeholder': 'Введите каждый шаг с новой строки. Шаги будут автоматически пронумерованы.'}),
-            'categories': forms.SelectMultiple(),
+            'text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Напишите ваш комментарий...'
+            }),
+            # rating без виджета, чтобы кастомно отрисовать звёзды
+        }
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ['title', 'content']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Тема статьи'}),
+            'content': forms.Textarea(attrs={'class': 'form-input', 'placeholder': 'Текст статьи', 'rows': 8}),
         }

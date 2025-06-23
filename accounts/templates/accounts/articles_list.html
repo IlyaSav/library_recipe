@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Статьи{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 900px;">
+    <h2 class="mb-4">Статьи</h2>
+    {% if articles %}
+        <div class="list-group">
+            {% for article in articles %}
+                <div class="list-group-item mb-3" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); background: #fff;">
+                    <h4 class="mb-2">{{ article.title }}</h4>
+                    <div class="mb-2 text-muted" style="font-size: 0.95em;">
+                        Автор: {{ article.author.username }} | {{ article.created_at|date:"d.m.Y H:i" }}
+                    </div>
+                    <div>{{ article.content|linebreaks }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Пока нет статей.</p>
+    {% endif %}
+</div>
+{% endblock %} 

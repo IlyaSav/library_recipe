@@ -1,287 +1,246 @@
-<nav class="navbar">
-    <div class="navbar-container">
-        <div class="navbar-brand">
-            <a href="/" class="logo">
-                <svg class="logo-icon" viewBox="0 0 24 24">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-                <span class="logo-text">CookMaster</span>
-            </a>
-        </div>
-        
-        <ul class="nav-menu">
-            {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a href="{% url 'dashboard' %}" class="nav-link">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                        </svg>
-                        <span class="nav-text">Профиль</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'recipe_list' %}" class="nav-link">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M3 3h18v18H3zM8 8h8v8H8z"/>
-                        </svg>
-                        <span class="nav-text">Рецепты</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'recipe_create' %}" class="nav-link highlight">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M12 5v14M5 12h14"/>
-                        </svg>
-                        <span class="nav-text">Новый рецепт</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'logout' %}" class="nav-link">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
-                        </svg>
-                        <span class="nav-text">Выйти</span>
-                    </a>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a href="{% url 'login' %}" class="nav-link">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
-                        </svg>
-                        <span class="nav-text">Вход</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'register' %}" class="nav-link highlight">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 8v6M23 11h-6"/>
-                        </svg>
-                        <span class="nav-text">Регистрация</span>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-        
-        <!-- Мобильное меню -->
-        <button class="hamburger">
-            <span class="hamburger-box">
-                <span class="hamburger-inner"></span>
-            </span>
+{% load static %}
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'recipe_list' %}">
+            <i class="fas fa-utensils me-2"></i>Кулинарные рецепты
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
         </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'recipe_list' %}">
+                        <i class="fas fa-list me-1"></i>Все рецепты
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'recipe_create' %}">
+                        <i class="fas fa-plus me-1"></i>Добавить рецепт
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'articles_list' %}">
+                        <i class="fas fa-newspaper me-1"></i>Статьи
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'menu_for_week' %}">
+                        <i class="fas fa-calendar-week me-1"></i>Меню на неделю
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i>{{ user.email }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'profile' %}">
+                                <i class="fas fa-user me-2"></i>Профиль
+                            </a>
+                        </li>
+                        {% if user.is_staff %}
+                        <li>
+                            <a class="dropdown-item" href="{% url 'article_create' %}">
+                                <i class="fas fa-pen-nib me-2"></i>Создать статью
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">
+                        <i class="fas fa-sign-in-alt me-1"></i>Войти
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}">
+                        <i class="fas fa-user-plus me-1"></i>Регистрация
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
 </nav>
 
+<!-- Добавляем отступ для контента под фиксированным навбаром -->
+<div style="height: 76px;"></div>
+
 <style>
-    :root {
-        --primary: #FF6B6B;
-        --primary-dark: #FF5252;
-        --secondary: #4ECDC4;
-        --light: #F7FFF7;
-        --dark: #292F36;
-        --gray: #6B7280;
-        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+.navbar {
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    padding: 1rem 0;
+}
+
+/* Добавляем эффект при скролле */
+.navbar.scrolled {
+    padding: 0.75rem 0;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--text-color) !important;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: var(--primary-color) !important;
+    transform: translateY(-2px);
+}
+
+.nav-link {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-color) !important;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+    transform: translateY(-2px);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+    width: 80%;
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: var(--card-bg);
+}
+
+.dropdown-item {
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+    color: var(--text-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.dropdown-item i {
+    width: 20px;
+    text-align: center;
+    color: var(--text-lighter);
+}
+
+.dropdown-item:hover i {
+    color: var(--primary-color);
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+    border-color: var(--border-color);
+}
+
+.navbar-toggler {
+    border: none;
+    padding: 0.5rem;
+    color: var(--text-color);
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(51, 51, 51, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        padding: 1rem 0;
+        background: var(--card-bg);
+        margin: 1rem -1rem -1rem;
+        border-radius: 0 0 16px 16px;
+        box-shadow: var(--shadow);
     }
     
-    .navbar {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
-    
-    .navbar-container {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 0.8rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .navbar-brand {
-        display: flex;
-        align-items: center;
-    }
-    
-    .logo {
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        font-weight: 700;
-        color: var(--dark);
-        transition: var(--transition);
-    }
-    
-    .logo:hover {
-        color: var(--primary);
-    }
-    
-    .logo-icon {
-        width: 24px;
-        height: 24px;
-        fill: var(--primary);
-        margin-right: 10px;
-    }
-    
-    .logo-text {
-        font-size: 1.4rem;
-        font-weight: 700;
-    }
-    
-    .nav-menu {
-        display: flex;
+    .navbar-nav {
         gap: 0.5rem;
-        list-style: none;
-    }
-    
-    .nav-item {
-        position: relative;
     }
     
     .nav-link {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: var(--gray);
-        text-decoration: none;
-        font-weight: 500;
-        padding: 0.6rem 1.2rem;
-        border-radius: 50px;
-        transition: var(--transition);
-        font-size: 0.95rem;
+        padding: 0.75rem 1rem !important;
     }
     
-    .nav-link:hover {
-        color: var(--dark);
-        background: rgba(0, 0, 0, 0.03);
-    }
-    
-    .nav-link.highlight {
-        background: var(--primary);
-        color: white;
-    }
-    
-    .nav-link.highlight:hover {
-        background: var(--primary-dark);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
-    }
-    
-    .nav-icon {
-        width: 18px;
-        height: 18px;
-        fill: currentColor;
-    }
-    
-    /* Анимация бургер-меню */
-    .hamburger {
-        display: none;
-        cursor: pointer;
-        background: none;
+    .dropdown-menu {
         border: none;
-        padding: 10px;
-        z-index: 1001;
+        box-shadow: none;
+        padding: 0.5rem 0;
+        margin: 0;
+        background: var(--bg-color);
     }
-    
-    .hamburger-box {
-        width: 24px;
-        height: 24px;
-        display: inline-block;
-        position: relative;
+
+    .dropdown-item {
+        padding: 0.75rem 1.5rem;
     }
-    
-    .hamburger-inner {
-        width: 100%;
-        height: 2px;
-        background-color: var(--dark);
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        transition: var(--transition);
+}
+
+@media (max-width: 480px) {
+    .navbar-brand {
+        font-size: 18px;
     }
-    
-    .hamburger-inner::before,
-    .hamburger-inner::after {
-        content: "";
-        width: 100%;
-        height: 2px;
-        background-color: var(--dark);
-        position: absolute;
-        left: 0;
-        transition: var(--transition);
+
+    .nav-link {
+        font-size: 13px;
     }
-    
-    .hamburger-inner::before {
-        top: -8px;
-    }
-    
-    .hamburger-inner::after {
-        top: 8px;
-    }
-    
-    /* Адаптивность */
-    @media (max-width: 768px) {
-        .navbar-container {
-            padding: 0.8rem 1.5rem;
-        }
-        
-        .hamburger {
-            display: block;
-        }
-        
-        .nav-menu {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 280px;
-            height: 100vh;
-            background: white;
-            flex-direction: column;
-            padding: 6rem 2rem 2rem;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
-            transition: right 0.4s ease;
-        }
-        
-        .nav-menu.active {
-            right: 0;
-        }
-        
-        .nav-item {
-            margin: 0.5rem 0;
-        }
-        
-        .nav-link {
-            padding: 0.8rem 1.2rem;
-            border-radius: 8px;
-        }
-        
-        .hamburger.active .hamburger-inner {
-            background-color: transparent;
-        }
-        
-        .hamburger.active .hamburger-inner::before {
-            transform: translateY(8px) rotate(45deg);
-        }
-        
-        .hamburger.active .hamburger-inner::after {
-            transform: translateY(-8px) rotate(-45deg);
-        }
-    }
+}
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
-        
-        hamburger.addEventListener('click', function() {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.querySelector('.navbar');
+    
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
     });
-</script>
+});
+</script> 

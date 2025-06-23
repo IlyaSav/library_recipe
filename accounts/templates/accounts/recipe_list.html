@@ -1,185 +1,610 @@
 {% extends 'base.html' %}
 
-{% block title %}Рецепты{% endblock %}
+{% block title %}Кулинарная энциклопедия{% endblock %}
 
 {% block content %}
-<div class="recipes-container">
-    <h1 class="recipes-header">Коллекция рецептов</h1>
-    
-    <div class="recipes-grid">
-        {% for recipe in recipes %}
-        <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-card-link">
-            <div class="recipe-card">
-                {% if recipe.image %}
-                <div class="recipe-image-wrapper">
-                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe-image">
-                </div>
+<div class="encyclopedia-container">
+    <div class="encyclopedia-header">
+        <div class="header-content">
+            <h1 class="encyclopedia-title">Кулинарная энциклопедия</h1>
+            <p class="encyclopedia-subtitle">Собрание лучших рецептов со всего мира</p>
+        </div>
+        <div class="library-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z"/>
+                <path d="M9.5 14a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-1 0v9a.5.5 0 0 0 .5.5z"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="encyclopedia-search">
+        <form method="get" class="search-container">
+            <input type="text" 
+                   name="search" 
+                   placeholder="Искать в энциклопедии..." 
+                   class="encyclopedia-search-input"
+                   value="{{ search_query }}">
+            {% if category_id %}
+                <input type="hidden" name="category" value="{{ category_id }}">
+            {% endif %}
+            <button type="submit" class="search-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+            </button>
+        </form>
+        <div class="filter-tags">
+            <form method="get" class="category-filter-form">
+                {% if search_query %}
+                    <input type="hidden" name="search" value="{{ search_query }}">
                 {% endif %}
-                
-                <div class="recipe-content">
-                    <h2 class="recipe-title">{{ recipe.title }}</h2>
-                    
-                    {% if recipe.description %}
-                    <p class="recipe-description">{{ recipe.description|truncatechars:100 }}</p>
+                <a href="{% url 'recipe_list' %}{% if search_query %}?search={{ search_query }}{% endif %}" 
+                   class="filter-tag {% if not selected_category %}active{% endif %}">Все</a>
+                {% for category in categories %}
+                    {% if forloop.counter <= 10 %}
+                        <a href="?category={{ category.id }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="filter-tag {% if selected_category == category.id %}active{% endif %}">
+                            {{ category.name }}
+                        </a>
                     {% endif %}
-                    
-                    <div class="recipe-meta">
-                        <span class="meta-author">@{{ recipe.author.username|default:recipe.author.email }}</span>
-                        <span class="meta-date">{{ recipe.created_at|date:"d M Y" }}</span>
+                {% endfor %}
+                {% if categories|length > 10 %}
+                    <button type="button" class="show-more-btn" onclick="document.getElementById('more-categories').classList.toggle('show')">
+                        Показать ещё
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                    </button>
+                {% endif %}
+                <select name="min_rating" class="filter-tag" style="width:auto;">
+                    <option value="">Рейтинг</option>
+                    {% for r in '54321' %}
+                        <option value="{{ r }}" {% if min_rating == r %}selected{% endif %}>от {{ r }}★</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <div id="more-categories" class="more-categories">
+                {% for category in categories %}
+                    {% if forloop.counter > 10 %}
+                        <a href="?category={{ category.id }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="filter-tag {% if selected_category == category.id %}active{% endif %}">
+                            {{ category.name }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="encyclopedia-shelves">
+        <div class="shelf-header">
+            <h2 class="shelf-title">
+                {% if search_query %}
+                    Результаты поиска: "{{ search_query }}"
+                {% elif selected_category %}
+                    {{ selected_category_name }}
+                {% else %}
+                    Все рецепты
+                {% endif %}
+            </h2>
+            <div class="shelf-decoration"></div>
+        </div>
+        
+        <div class="book-grid">
+            {% for recipe in recipes %}
+            <div class="recipe-book">
+                <div class="book-cover">
+                    {% if recipe.image %}
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="book-image">
+                    {% else %}
+                        <div class="book-image-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
+                            </svg>
+                        </div>
+                    {% endif %}
+                    <div class="book-spine"></div>
+                </div>
+                <div class="book-info">
+                    <h3 class="book-title">{{ recipe.title }}</h3>
+                    <div class="book-meta">
+                        <span class="book-author">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                            </svg>
+                            {{ recipe.author.username }}
+                        </span>
+                        <span class="book-pages">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                            </svg>
+                            {{ recipe.cook_time }} мин
+                        </span>
+                        <span class="book-rating">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#FFD700" viewBox="0 0 16 16">
+                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                            </svg>
+                            {{ recipe.avg_rating|default:0|floatformat:1 }} ({{ recipe.rating_count }})
+                        </span>
                     </div>
-                    
-                    <div class="recipe-stats">
-                        <span class="stat-item">⏱️ {{ recipe.prep_time|default:"-" }} мин</span>
-                        <span class="stat-item">🔥 {{ recipe.cook_time|default:"-" }} мин</span>
+                    <p class="book-description">{{ recipe.description|truncatechars:120 }}</p>
+                    <a href="{% url 'recipe_detail' recipe.id %}" class="read-button">Открыть рецепт</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-library">
+                <div class="empty-book">
+                    <div class="book-cover empty">
+                        <div class="book-image-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z"/>
+                            </svg>
+                        </div>
+                        <div class="book-spine"></div>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">Энциклопедия пуста</h3>
+                        <p class="book-description">Пока нет добавленных рецептов. Станьте первым автором!</p>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'recipe_create' %}" class="read-button">Добавить рецепт</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-        </a>
-        {% empty %}
-        <div class="empty-state">
-            <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" alt="No recipes" width="120">
-            <p>Пока нет рецептов. Будьте первым!</p>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
 </div>
 
 <style>
-    .recipes-container {
+    :root {
+        --primary-color: #8B4513; /* Коричневый для книг */
+        --secondary-color: #A0522D;
+        --light-brown: #D2B48C;
+        --cream: #F5F5DC;
+        --dark-text: #3E2723;
+        --light-text: #5D4037;
+    }
+
+    .encyclopedia-container {
         max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        background-color: #f9f5f0;
+        font-family: 'Georgia', serif;
     }
-    
-    .recipes-header {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: #2d3436;
-        margin-bottom: 1.5rem;
-        text-align: center;
-        background: linear-gradient(90deg, #e17055, #0984e3);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+
+    .encyclopedia-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--light-brown);
+        position: relative;
     }
-    
-    .recipes-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 1.5rem;
+
+    .encyclopedia-header::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--light-brown), transparent);
     }
-    
-    .recipe-card-link {
-        text-decoration: none;
-        color: inherit;
+
+    .encyclopedia-title {
+        font-size: 2.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: 1px;
     }
-    
-    .recipe-card {
+
+    .encyclopedia-subtitle {
+        font-size: 1.2rem;
+        color: var(--light-text);
+        margin: 0.5rem 0 0 0;
+        font-style: italic;
+    }
+
+    .library-icon {
+        color: var(--primary-color);
+        opacity: 0.7;
+    }
+
+    .encyclopedia-search {
+        margin-bottom: 3rem;
+    }
+
+    .search-container {
+        display: flex;
+        max-width: 600px;
+        margin: 0 auto 1.5rem;
+    }
+
+    .encyclopedia-search-input {
+        flex: 1;
+        padding: 0.8rem 1.2rem;
+        border: 1px solid var(--light-brown);
+        border-radius: 4px 0 0 4px;
+        font-size: 1rem;
+        background-color: var(--cream);
+        font-family: 'Georgia', serif;
+    }
+
+    .encyclopedia-search-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+    }
+
+    .search-button {
+        padding: 0 1.5rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .search-button:hover {
+        background: var(--secondary-color);
+    }
+
+    .filter-tags {
+        display: flex;
+        justify-content: center;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+
+    .category-filter-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        justify-content: center;
+    }
+
+    .filter-tag {
+        padding: 0.5rem 1rem;
         background: white;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        height: 100%;
+        border: 1px solid var(--light-brown);
+        border-radius: 20px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--dark-text);
+    }
+
+    .filter-tag:hover, .filter-tag.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .encyclopedia-shelves {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e0d6c9;
+    }
+
+    .shelf-header {
+        margin-bottom: 2.5rem;
+        position: relative;
+        text-align: center;
+    }
+
+    .shelf-decoration {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+
+    .shelf-decoration::before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+
+    .shelf-title {
+        display: inline-block;
+        font-size: 1.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        padding: 0 1rem;
+        background: white;
+        position: relative;
+        z-index: 1;
+    }
+
+    .book-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2.2rem 2rem;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1200px) {
+        .book-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    @media (max-width: 900px) {
+        .book-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 600px) {
+        .book-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .recipe-book {
         display: flex;
         flex-direction: column;
+        align-items: stretch;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(139,69,19,0.07), 0 1.5px 6px rgba(139,69,19,0.04);
+        transition: box-shadow 0.2s, transform 0.2s;
+        padding: 1.2rem 1.2rem 1.1rem 1.2rem;
+        min-height: 420px;
+        position: relative;
     }
-    
-    .recipe-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 20px rgba(0,0,0,0.12);
+    .recipe-book:hover {
+        box-shadow: 0 8px 32px rgba(139,69,19,0.13), 0 2px 8px rgba(139,69,19,0.08);
+        transform: translateY(-3px) scale(1.015);
+        z-index: 2;
     }
-    
-    .recipe-image-wrapper {
+
+    .book-cover {
+        width: 100%;
         height: 180px;
+        margin-bottom: 1rem;
+        border-radius: 10px;
         overflow: hidden;
+        background: #f1e8dd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(139,69,19,0.04);
     }
-    
-    .recipe-image {
+
+    .book-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
+        border-radius: 10px;
     }
-    
-    .recipe-card:hover .recipe-image {
-        transform: scale(1.03);
-    }
-    
-    .recipe-content {
-        padding: 1.25rem;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .recipe-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin: 0 0 0.5rem 0;
-        color: #2d3436;
-        line-height: 1.3;
-    }
-    
-    .recipe-description {
-        color: #636e72;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        margin-bottom: 1rem;
-        flex-grow: 1;
-    }
-    
-    .recipe-meta {
-        display: flex;
-        justify-content: space-between;
-        margin-top: auto;
-        font-size: 0.8rem;
-        color: #b2bec3;
-    }
-    
-    .meta-author {
-        font-weight: 500;
-        color: #0984e3;
-    }
-    
-    .recipe-stats {
-        display: flex;
-        gap: 1rem;
-        margin-top: 0.75rem;
-        padding-top: 0.75rem;
-        border-top: 1px solid #f0f0f0;
-        font-size: 0.85rem;
-    }
-    
-    .stat-item {
+
+    .book-image-placeholder {
+        width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
-        gap: 0.3rem;
+        justify-content: center;
+        background: #f1e8dd;
+        color: var(--light-text);
+        border-radius: 10px;
+        font-size: 2.2rem;
     }
-    
-    .empty-state {
+
+    .book-spine {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 8px;
+        height: 100%;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        transform: translateX(-8px) rotateY(60deg);
+        transform-origin: right center;
+        border-radius: 2px 0 0 2px;
+    }
+
+    .book-info {
+        flex: 1;
+    }
+
+    .book-title {
+        font-size: 1.2rem;
+        color: var(--dark-text);
+        margin: 0 0 0.5rem 0;
+        font-weight: 600;
+    }
+
+    .book-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.9rem;
+        color: var(--light-text);
+    }
+
+    .book-author,
+    .book-pages,
+    .book-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .book-author {
+        color: var(--dark-text);
+    }
+
+    .book-pages {
+        color: var(--dark-text);
+    }
+
+    .book-rating {
+        color: var(--dark-text);
+    }
+
+    .book-rating svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .book-description {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--light-text);
+        margin-bottom: 1.2rem;
+    }
+
+    .read-button {
+        display: inline-block;
+        padding: 0.5rem 1.2rem;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .read-button:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+
+    .empty-library {
         grid-column: 1 / -1;
         text-align: center;
-        padding: 3rem 0;
+        padding: 2rem;
     }
-    
-    .empty-state img {
-        opacity: 0.7;
-        margin-bottom: 1rem;
+
+    .empty-book {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        max-width: 300px;
     }
-    
-    .empty-state p {
-        color: #636e72;
-        font-size: 1.1rem;
+
+    .book-cover.empty {
+        width: 150px;
+        height: 200px;
     }
-    
+
+    .show-more-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: white;
+        border: 1px solid var(--light-brown);
+        border-radius: 20px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--dark-text);
+    }
+
+    .show-more-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .more-categories {
+        display: none;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        justify-content: center;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--light-brown);
+    }
+
+    .more-categories.show {
+        display: flex;
+    }
+
     @media (max-width: 768px) {
-        .recipes-grid {
+        .encyclopedia-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .library-icon {
+            display: none;
+        }
+
+        .encyclopedia-title {
+            font-size: 2.2rem;
+        }
+
+        .book-grid {
             grid-template-columns: 1fr;
         }
-        
-        .recipes-header {
-            font-size: 2rem;
+
+        .recipe-book {
+            flex-direction: column;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 200px;
+        }
+
+        .book-spine {
+            display: none;
+        }
+
+        .category-filter-form {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .filter-tag {
+            width: 100%;
+            text-align: center;
+        }
+
+        .show-more-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .encyclopedia-title {
+            font-size: 1.8rem;
+        }
+
+        .encyclopedia-shelves {
+            padding: 1.5rem;
+        }
+
+        .search-container {
+            flex-direction: column;
+        }
+
+        .encyclopedia-search-input {
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-button {
+            border-radius: 4px;
+            padding: 0.8rem;
         }
     }
 </style>

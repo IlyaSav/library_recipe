@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from django.db.models import Avg
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -43,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Recipe(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    ingredients = models.TextField()
+    ingredients = models.TextField(blank=True)
     instructions = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -57,6 +58,14 @@ class Recipe(models.Model):
     
     def __str__(self):
         return self.title
+
+    @property
+    def average_rating(self):
+        return self.comments.aggregate(Avg('rating'))['rating__avg'] or 0
+
+    @property
+    def rating_count(self):
+        return self.comments.count()
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -80,4 +89,39 @@ class Like(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.user.username} likes {self.recipe.title}'
+        return f'{self.user.email} likes {self.recipe.title}'
+
+class Comment(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], default=5)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Комментарий от {self.author.email} к рецепту {self.recipe.title}'
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='favorited_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'recipe')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.email} - {self.recipe.title}"
+
+class Article(models.Model):
+    title = models.CharField(max_length=255, verbose_name='Тема статьи')
+    content = models.TextField(verbose_name='Текст статьи')
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='articles')
+
+    def __str__(self):
+        return self.title

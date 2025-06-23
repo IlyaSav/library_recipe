@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Создать статью{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 700px;">
+    <h2 class="mb-4">Создать статью</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-group mb-3">
+            {{ form.title.label_tag }}
+            {{ form.title }}
+            {{ form.title.errors }}
+        </div>
+        <div class="form-group mb-3">
+            {{ form.content.label_tag }}
+            {{ form.content }}
+            {{ form.content.errors }}
+        </div>
+        <button type="submit" class="btn btn-primary">Создать статью</button>
+    </form>
+</div>
+{% endblock %} 

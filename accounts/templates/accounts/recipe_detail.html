@@ -1,225 +1,271 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 
 {% block title %}{{ recipe.title }}{% endblock %}
 
 {% block content %}
-<div class="recipe-detail-container">
-    <div class="recipe-card">
-        <h1 class="recipe-title">{{ recipe.title }}</h1>
-        
-        {% if recipe.image %}
-        <div class="recipe-image-container">
-            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe-image" style="max-width: 100%; height: auto; object-fit: contain;">
-        </div>
-        {% endif %}
-        
-        <!-- Остальной контент остается без изменений -->
-        {% if recipe.description %}
-        <p class="recipe-description">{{ recipe.description }}</p>
-        {% endif %}
-        
-        <div class="recipe-meta-info">
-            {% if recipe.prep_time %}
-            <div class="meta-item">
-                <span class="meta-icon">⏱️</span>
-                <span>Подготовка: {{ recipe.prep_time }} мин</span>
-            </div>
-            {% endif %}
-            
-            {% if recipe.cook_time %}
-            <div class="meta-item">
-                <span class="meta-icon">🔥</span>
-                <span>Приготовление: {{ recipe.cook_time }} мин</span>
-            </div>
-            {% endif %}
-            
-            {% if recipe.categories.all %}
-            <div class="meta-item">
-                <span class="meta-icon">🏷️</span>
-                <span>
-                    Категории: 
-                    {% for category in recipe.categories.all %}
-                        {{ category.name }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </span>
-            </div>
-            {% endif %}
-        </div>
-        
-        <div class="recipe-section">
-            <h2 class="section-title">Ингредиенты</h2>
-            <div class="ingredients-list">{{ recipe.ingredients|linebreaks }}</div>
-        </div>
-        
-        <div class="recipe-section">
-            <h2 class="section-title">Инструкция</h2>
-            <ol class="instructions-list">
-                {% for step in recipe.instructions.splitlines %}
-                    {% if step.strip %}
-                    <li class="instruction-step">{{ step.strip }}</li>
+<style>
+    .recipe-detail-bg {
+        background: #f9f5f0;
+        min-height: 100vh;
+        padding-bottom: 40px;
+    }
+    .recipe-main-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        overflow: hidden;
+        margin-bottom: 2.5rem;
+    }
+    .recipe-image {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        border-radius: 16px 0 0 16px;
+        background: #f1e8dd;
+    }
+    .recipe-info {
+        padding: 2.5rem 2rem 2rem 2rem;
+    }
+    .recipe-title {
+        font-size: 2.1rem;
+        font-weight: 700;
+        color: #3E2723;
+        margin-bottom: 0.7rem;
+    }
+    .recipe-meta {
+        display: flex;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.2rem;
+    }
+    .meta-item {
+        background: #f5f5dc;
+        color: #5D4037;
+        border-radius: 20px;
+        padding: 7px 18px;
+        font-size: 1rem;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+    .section-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+        padding: 2rem 2rem 1.5rem 2rem;
+    }
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #3E2723;
+        margin-bottom: 1.2rem;
+        position: relative;
+        padding-bottom: 0.4rem;
+    }
+    .section-title:after {
+        content: '';
+        display: block;
+        width: 48px;
+        height: 3px;
+        background: #8B4513;
+        border-radius: 2px;
+        margin-top: 6px;
+    }
+    .comment-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease;
+    }
+    .comment-card:hover {
+        transform: translateY(-3px);
+    }
+    .comment-author {
+        font-weight: 600;
+        color: #3E2723;
+    }
+    .comment-date {
+        font-size: 0.8rem;
+        color: #95a5a6;
+    }
+    .rating-badge {
+        display: inline-block;
+        background: #FFD700;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-bottom: 0.5em;
+    }
+    .btn-custom {
+        background: #8B4513;
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .btn-custom:hover {
+        background: #A0522D;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(139, 69, 19, 0.13);
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #dfe6e9;
+    }
+    .form-control:focus {
+        border-color: #8B4513;
+        box-shadow: 0 0 0 0.2rem rgba(139, 69, 19, 0.13);
+    }
+    .no-comments {
+        background: #fff8e1;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        border-radius: 0 8px 8px 0;
+    }
+    .star-rating { display: flex; flex-direction: row-reverse; gap: 0.2em; font-size: 2em; cursor: pointer; }
+    .star { color: #ddd; transition: color 0.2s; }
+    .star.selected, .star:hover, .star:hover ~ .star { color: #FFD700; }
+    select[name="rating"] { display: none; }
+</style>
+
+<div class="recipe-detail-bg">
+    <div class="container py-4">
+        <div class="recipe-main-card mb-5">
+            <div class="row g-0 align-items-stretch">
+                <div class="col-md-5 p-0">
+                    {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" class="recipe-image" alt="{{ recipe.title }}">
                     {% endif %}
-                {% endfor %}
-            </ol>
-        </div>
-        
-        <div class="recipe-footer">
-            <div class="author-info">
-                <span class="author-label">Автор:</span>
-                <span class="author-name">{{ recipe.author.email }}</span>
-                <span class="creation-date">{{ recipe.created_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                <div class="col-md-7">
+                    <div class="recipe-info h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h1 class="recipe-title">{{ recipe.title }}</h1>
+                            <div class="text-muted mb-3">Автор: @{{ recipe.author.username }}</div>
+                            <p class="lead mb-4">{{ recipe.description }}</p>
+                            <div class="recipe-meta mb-4">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock me-2"></i> {{ recipe.prep_time }} мин
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-fire me-2"></i> {{ recipe.cook_time }} мин
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-star me-2"></i> {{ recipe.average_rating|floatformat:1 }} ({{ recipe.rating_count }})
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#comments" class="btn btn-custom align-self-start mt-2">
+                            <i class="fas fa-comments me-2"></i> Комментарии
+                        </a>
+                    </div>
+                </div>
             </div>
-            
-            <a href="{% url 'recipe_list' %}" class="back-link">← Вернуться к списку рецептов</a>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="section-card">
+                    <h3 class="section-title">Ингредиенты</h3>
+                    <div class="ps-2">{{ recipe.ingredients|linebreaks }}</div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="section-card">
+                    <h3 class="section-title">Шаги приготовления</h3>
+                    <ol class="ps-2" style="padding-left: 1.2em;">
+                        {% for step in instructions_list %}
+                            {% if step.strip %}
+                                <li style="margin-bottom: 0.7em; line-height: 1.6;">{{ step|linebreaksbr }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card mb-5" id="comments">
+            <h3 class="section-title mb-4">Комментарии</h3>
+            {% if comments %}
+                {% for comment in comments %}
+                <div class="comment-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="comment-author">{{ comment.author.email }}</span>
+                        <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="rating-badge">Оценка: {{ comment.rating }}</span>
+                    </div>
+                    <div class="comment-text">{{ comment.text|linebreaks }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-comments mb-4">
+                    <i class="fas fa-comment-slash me-2"></i> Комментариев пока нет
+                </div>
+            {% endif %}
+            <hr class="my-4">
+            <h4 class="section-title">Добавить комментарий</h4>
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="mb-4">
+                    <label class="form-label fw-bold mb-2">Ваш комментарий</label>
+                    {{ form.text }}
+                    {{ form.text.errors }}
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold mb-2">Ваша оценка</label>
+                    <div id="star-rating" class="star-rating mb-2">
+                        {% for i in "54321" %}
+                            <span class="star" data-value="{{ i }}">&#9733;</span>
+                        {% endfor %}
+                    </div>
+                    {{ form.rating }}
+                    {{ form.rating.errors }}
+                </div>
+                <button type="submit" class="btn btn-custom">
+                    <i class="fas fa-paper-plane me-2"></i> Отправить
+                </button>
+            </form>
         </div>
     </div>
 </div>
 
-<style>
-    .recipe-detail-container {
-        max-width: 800px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = Array.from(document.querySelectorAll('#star-rating .star'));
+    const select = document.querySelector('select[name="rating"]');
+    function highlightStars(val) {
+        stars.forEach(star => {
+            star.classList.toggle('selected', Number(star.dataset.value) <= val);
+        });
     }
-    
-    .recipe-card {
-        background: white;
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
-    
-    .recipe-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #2d3436;
-        margin-bottom: 1rem;
-    }
-    
-    .recipe-image-container {
-        margin: 1.5rem 0;
-        text-align: center; /* Центрируем изображение */
-        max-height: none; /* Убираем ограничение высоты */
-    }
-    
-    .recipe-image {
-        max-width: 100%;
-        height: auto;
-        display: inline-block; /* Для центрирования */
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .recipe-description {
-        font-size: 1.1rem;
-        line-height: 1.6;
-        color: #636e72;
-        margin-bottom: 1.5rem;
-    }
-    
-    .recipe-meta-info {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.95rem;
-        color: #636e72;
-    }
-    
-    .meta-icon {
-        font-size: 1rem;
-    }
-    
-    .recipe-section {
-        margin-bottom: 2rem;
-    }
-    
-    .section-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #e17055;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #f0f0f0;
-    }
-    
-    .ingredients-list {
-        white-space: pre-wrap;
-        line-height: 1.8;
-        padding-left: 1rem;
-    }
-    
-    .instructions-list {
-        padding-left: 1.5rem;
-    }
-    
-    .instruction-step {
-        margin-bottom: 0.8rem;
-        line-height: 1.6;
-        padding-left: 0.5rem;
-    }
-    
-    .recipe-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 2rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid #f0f0f0;
-    }
-    
-    .author-info {
-        font-size: 0.9rem;
-        color: #b2bec3;
-    }
-    
-    .author-label {
-        margin-right: 0.3rem;
-    }
-    
-    .author-name {
-        margin-right: 1rem;
-    }
-    
-    .back-link {
-        color: #0984e3;
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.2s;
-    }
-    
-    .back-link:hover {
-        color: #074b83;
-        text-decoration: underline;
-    }
-    
-    @media (max-width: 768px) {
-        .recipe-card {
-            padding: 1.5rem;
-        }
-        
-        .recipe-title {
-            font-size: 1.8rem;
-        }
-        
-        .recipe-footer {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-        
-        .recipe-image {
-            width: auto; /* Для мобильных - сохраняем оригинальную ширину */
-            max-width: 100%; /* Но не больше ширины контейнера */
-        }
-    }
-</style>
+    stars.forEach(star => {
+        star.addEventListener('mouseenter', function() {
+            highlightStars(Number(star.dataset.value));
+        });
+        star.addEventListener('click', function() {
+            select.value = star.dataset.value;
+            highlightStars(Number(star.dataset.value));
+        });
+    });
+    document.getElementById('star-rating').addEventListener('mouseleave', function() {
+        highlightStars(Number(select.value));
+    });
+    highlightStars(Number(select.value));
+});
+</script>
 {% endblock %}

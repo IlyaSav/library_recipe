@@ -1,0 +1,371 @@
+{% extends 'base.html' %}
+{% block title %}🍽️ Меню на неделю | FoodGram{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-color: #8B4513;
+        --secondary-color: #A0522D;
+        --light-brown: #D2B48C;
+        --cream: #F5F5DC;
+        --dark-text: #3E2723;
+        --light-text: #5D4037;
+    }
+
+    .menu-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        background-color: #f9f5f0;
+        font-family: 'Georgia', serif;
+    }
+
+    .menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--light-brown);
+        position: relative;
+    }
+
+    .menu-header::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--light-brown), transparent);
+    }
+
+    .menu-title {
+        font-size: 2.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .menu-subtitle {
+        font-size: 1.2rem;
+        color: var(--light-text);
+        margin: 0.5rem 0 0 0;
+        font-style: italic;
+    }
+
+    .menu-icon {
+        color: var(--primary-color);
+        opacity: 0.7;
+    }
+
+    .menu-alert {
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 2rem;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        font-family: 'Georgia', serif;
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, #74b9ff, #0984e3);
+        color: white;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+        color: var(--dark-text);
+    }
+
+    .menu-shelf {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e0d6c9;
+        margin-bottom: 2rem;
+    }
+
+    .shelf-header {
+        margin-bottom: 2.5rem;
+        position: relative;
+        text-align: center;
+    }
+
+    .shelf-decoration {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+
+    .shelf-decoration::before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+
+    .shelf-title {
+        display: inline-block;
+        font-size: 1.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        padding: 0 1rem;
+        background: white;
+        position: relative;
+        z-index: 1;
+    }
+
+    .menu-days {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .menu-day {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--primary-color);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .menu-day:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .day-book {
+        width: 80px;
+        height: 110px;
+        position: relative;
+        perspective: 1000px;
+        transform-style: preserve-3d;
+        flex-shrink: 0;
+    }
+
+    .day-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 2px 4px 4px 2px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .day-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f1e8dd;
+        color: var(--light-text);
+        border-radius: 2px 4px 4px 2px;
+    }
+
+    .day-spine {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 6px;
+        height: 100%;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        transform: translateX(-6px) rotateY(60deg);
+        transform-origin: right center;
+        border-radius: 2px 0 0 2px;
+    }
+
+    .day-info {
+        flex: 1;
+    }
+
+    .day-name {
+        font-size: 1.3rem;
+        color: var(--dark-text);
+        margin: 0 0 0.5rem 0;
+        font-weight: 600;
+        position: relative;
+        display: inline-block;
+    }
+
+    .day-name:after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 40px;
+        height: 2px;
+        background: var(--primary-color);
+    }
+
+    .recipe-title {
+        font-size: 1.1rem;
+        color: var(--dark-text);
+        margin: 0.5rem 0;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s;
+        display: inline-block;
+    }
+
+    .recipe-title:hover {
+        color: var(--secondary-color);
+        text-decoration: underline;
+    }
+
+    .recipe-author {
+        font-size: 0.9rem;
+        color: var(--light-text);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 0.5rem;
+    }
+
+    .recipe-meta {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.8rem;
+        font-size: 0.9rem;
+        color: var(--light-text);
+    }
+
+    .recipe-time,
+    .recipe-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    @media (max-width: 768px) {
+        .menu-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .menu-icon {
+            display: none;
+        }
+
+        .menu-title {
+            font-size: 2.2rem;
+        }
+
+        .menu-days {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .menu-title {
+            font-size: 1.8rem;
+        }
+
+        .menu-day {
+            flex-direction: column;
+        }
+
+        .day-book {
+            width: 100%;
+            height: 150px;
+        }
+
+        .day-spine {
+            display: none;
+        }
+    }
+</style>
+
+<div class="menu-container">
+    <div class="menu-header">
+        <div class="header-content">
+            <h1 class="menu-title">🍽️ Меню на неделю</h1>
+            <p class="menu-subtitle">Ваше персональное кулинарное расписание</p>
+        </div>
+        <div class="menu-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1H1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V5zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H3z"/>
+            </svg>
+        </div>
+    </div>
+    
+    {% if has_user_activity %}
+        <div class="menu-alert alert-info">
+            <i class="fas fa-heart me-2"></i> Меню составлено из ваших лайкнутых и избранных рецептов
+        </div>
+    {% else %}
+        <div class="menu-alert alert-warning">
+            <i class="fas fa-fire me-2"></i> У вас пока нет лайкнутых рецептов — мы подобрали самые популярные!
+        </div>
+    {% endif %}
+    
+    <div class="menu-shelf">
+        <div class="shelf-header">
+            <h2 class="shelf-title">Ваше недельное меню</h2>
+            <div class="shelf-decoration"></div>
+        </div>
+        
+        <div class="menu-days">
+            {% for day, recipe in menu %}
+                <div class="menu-day">
+                    <div class="day-book">
+                        {% if recipe.image %}
+                            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="day-image">
+                        {% else %}
+                            <div class="day-image-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
+                                </svg>
+                            </div>
+                        {% endif %}
+                        <div class="day-spine"></div>
+                    </div>
+                    <div class="day-info">
+                        <div class="day-name">{{ day }}</div>
+                        <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-title">{{ recipe.title }}</a>
+                        <div class="recipe-author">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                            </svg>
+                            {{ recipe.author.username }}
+                        </div>
+                        <div class="recipe-meta">
+                            <div class="recipe-time">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                                </svg>
+                                {{ recipe.cook_time }} мин
+                            </div>
+                            <div class="recipe-rating">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#FFD700" viewBox="0 0 16 16">
+                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                </svg>
+                                {{ recipe.avg_rating|default:0|floatformat:1 }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, Recipe, Category
+from .models import User, Recipe, Category, Like, Comment, Favorite
 
 class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_active')
@@ -28,6 +28,17 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ('created_at', 'categories')
     search_fields = ('title', 'ingredients', 'steps')
     filter_horizontal = ('categories',)
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('author', 'recipe', 'rating', 'created_at', 'text_preview')
+    list_filter = ('rating', 'created_at')
+    search_fields = ('author__email', 'recipe__title', 'text')
+    ordering = ('-created_at',)
+    
+    def text_preview(self, obj):
+        return obj.text[:50] + '...' if len(obj.text) > 50 else obj.text
+    text_preview.short_description = 'Текст комментария'
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
