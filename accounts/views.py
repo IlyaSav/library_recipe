@@ -19,30 +19,73 @@ from django.db.models import Q, Avg, Count
 from django.contrib.admin.views.decorators import staff_member_required
 import random
 from datetime import datetime, timedelta
+from django.utils.decorators import method_decorator
 
 logger = logging.getLogger(__name__)
 
-def register_view(request):
+def auth_view(request):
+    login_form = UserLoginForm(request, data=request.POST if request.POST.get('login_submit') else None)
+    register_form = UserRegisterForm(request.POST if request.POST.get('register_submit') else None)
+    login_success = False
+    register_success = False
+    login_error = None
+    register_error = None
+
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('recipe_list')
-    else:
-        form = UserRegisterForm()
-    return render(request, 'accounts/register.html', {'form': form})
+        if 'login_submit' in request.POST:
+            if login_form.is_valid():
+                user = login_form.get_user()
+                login(request, user)
+                return redirect('recipe_list')
+            else:
+                login_error = 'Неверный email или пароль.'
+        elif 'register_submit' in request.POST:
+            if register_form.is_valid():
+                user = register_form.save(commit=False)
+                user.first_name = register_form.cleaned_data['first_name']
+                user.last_name = register_form.cleaned_data['last_name']
+                user.save()
+                login(request, user)
+                return redirect('recipe_list')
+            else:
+                register_error = 'Ошибка регистрации. Проверьте введённые данные.'
+
+    return render(request, 'accounts/auth.html', {
+        'login_form': login_form,
+        'register_form': register_form,
+        'login_error': login_error,
+        'register_error': register_error,
+    })
 
 def login_view(request):
+    login_form = UserLoginForm(request, data=request.POST or None)
+    login_error = None
     if request.method == 'POST':
-        form = UserLoginForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
+        if login_form.is_valid():
+            user = login_form.get_user()
             login(request, user)
             return redirect('recipe_list')
-    else:
-        form = UserLoginForm()
-    return render(request, 'accounts/login.html', {'form': form})
+        else:
+            login_error = 'Неверный email или пароль.'
+    return render(request, 'accounts/login.html', {
+        'login_form': login_form,
+        'login_error': login_error,
+    })
+
+def register_view(request):
+    register_form = UserRegisterForm(request.POST or None)
+    register_error = None
+    if request.method == 'POST':
+        if register_form.is_valid():
+            user = register_form.save()
+            login(request, user)
+            return redirect('recipe_list')
+        else:
+            register_error = 'Ошибка регистрации. Проверьте введённые данные.'
+    return render(request, 'accounts/register.html', {
+        'register_form': register_form,
+        'register_error': register_error,
+    })
 
 @login_required
 def profile_view(request):
@@ -51,16 +94,17 @@ def profile_view(request):
     user_likes = Like.objects.filter(user=user)
     # Получаем рецепты, которые пользователь лайкнул
     liked_recipes = Recipe.objects.filter(likes__in=user_likes).distinct()
-    
     # Получаем избранные рецепты
     favorite_recipes = Recipe.objects.filter(favorited_by__user=user).distinct()
-    
+    # Получаем рецепты, созданные пользователем
+    user_recipes = Recipe.objects.filter(author=user).order_by('-created_at')
     context = {
         'user': user,
         'liked_recipes': liked_recipes,
         'liked_recipes_count': user_likes.count(),
         'favorite_recipes': favorite_recipes,
-        'favorite_recipes_count': favorite_recipes.count()
+        'favorite_recipes_count': favorite_recipes.count(),
+        'user_recipes': user_recipes,
     }
     return render(request, 'accounts/profile.html', context)
 
@@ -72,9 +116,10 @@ def recipe_create_view(request):
             recipe = form.save(commit=False)
             recipe.author = request.user
             recipe.instructions = form.cleaned_data['steps']
+            recipe.moderation_status = 'pending'
             recipe.save()
             form.save_m2m()  # Сохраняем связи many-to-many (категории)
-            messages.success(request, 'Рецепт успешно создан.')
+            messages.success(request, 'Рецепт отправлен на модерацию.')
             return redirect('recipe_list')
         else:
             messages.error(request, 'Ошибка при создании рецепта. Пожалуйста, проверьте форму.')
@@ -83,9 +128,8 @@ def recipe_create_view(request):
         form = RecipeForm()
     return render(request, 'accounts/recipe_create.html', {'form': form})
 
-@login_required
 def recipe_list_view(request):
-    recipes = Recipe.objects.all().order_by('-created_at')
+    recipes = Recipe.objects.filter(moderation_status='approved').order_by('-created_at')
     search_query = request.GET.get('search', '')
     category_id = request.GET.get('category')
     min_rating = request.GET.get('min_rating')
@@ -383,3 +427,34 @@ def menu_for_week_view(request):
     menu = list(zip(days, week_menu))
 
     return render(request, 'accounts/menu_for_week.html', {'menu': menu, 'has_user_activity': user_recipes.exists()})
+
+@staff_member_required
+def moderation_recipes_view(request):
+    pending_recipes = Recipe.objects.filter(moderation_status='pending').order_by('-created_at')
+    if request.method == 'POST':
+        recipe_id = request.POST.get('recipe_id')
+        action = request.POST.get('action')
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        if action == 'approve':
+            recipe.moderation_status = 'approved'
+            recipe.save()
+        elif action == 'reject':
+            recipe.moderation_status = 'rejected'
+            recipe.save()
+        return redirect('moderation_recipes')
+    return render(request, 'accounts/moderation_recipes.html', {'pending_recipes': pending_recipes})
+
+@staff_member_required
+def moderation_recipe_detail_view(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    instructions_list = recipe.instructions.splitlines() if recipe.instructions else []
+    return render(request, 'accounts/moderation_recipe_detail.html', {
+        'recipe': recipe,
+        'instructions_list': instructions_list,
+        'user': request.user,
+    })
+
+@staff_member_required
+def admin_recipes_table_view(request):
+    recipes = Recipe.objects.select_related('author').prefetch_related('categories').order_by('-created_at')
+    return render(request, 'accounts/admin_recipes_table.html', {'recipes': recipes})

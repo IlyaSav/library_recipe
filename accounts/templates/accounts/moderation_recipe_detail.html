@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}Модерация: {{ recipe.title }}{% endblock %}
+{% block content %}
+<style>
+    .moderation-detail-bg {
+        background: #f9f5f0;
+        min-height: 100vh;
+        padding-bottom: 40px;
+    }
+    .moderation-main-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        overflow: hidden;
+        margin-bottom: 2.5rem;
+    }
+    .moderation-image {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        border-radius: 16px 0 0 16px;
+        background: #f1e8dd;
+    }
+    .moderation-info {
+        padding: 2.5rem 2rem 2rem 2rem;
+    }
+    .moderation-title {
+        font-size: 2.1rem;
+        font-weight: 700;
+        color: #3E2723;
+        margin-bottom: 0.7rem;
+    }
+    .moderation-meta {
+        display: flex;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.2rem;
+    }
+    .meta-item {
+        background: #f5f5dc;
+        color: #5D4037;
+        border-radius: 20px;
+        padding: 7px 18px;
+        font-size: 1rem;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+    .section-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+        padding: 2rem 2rem 1.5rem 2rem;
+    }
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #3E2723;
+        margin-bottom: 1.2rem;
+        position: relative;
+        padding-bottom: 0.4rem;
+    }
+    .section-title:after {
+        content: '';
+        display: block;
+        width: 48px;
+        height: 3px;
+        background: #8B4513;
+        border-radius: 2px;
+        margin-top: 6px;
+    }
+    .moderation-status {
+        display: inline-block;
+        padding: 0.4em 1.2em;
+        border-radius: 16px;
+        font-size: 1em;
+        font-weight: 600;
+        margin-bottom: 1em;
+    }
+    .moderation-status.pending { background: #fff3cd; color: #856404; }
+    .moderation-status.approved { background: #d4edda; color: #155724; }
+    .moderation-status.rejected { background: #f8d7da; color: #721c24; }
+</style>
+<div class="moderation-detail-bg">
+    <div class="container py-4">
+        <div class="moderation-main-card mb-5">
+            <div class="row g-0 align-items-stretch">
+                <div class="col-md-5 p-0">
+                    {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" class="moderation-image" alt="{{ recipe.title }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/400x320?text=Нет+фото" class="moderation-image" alt="Нет фото">
+                    {% endif %}
+                </div>
+                <div class="col-md-7">
+                    <div class="moderation-info h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h1 class="moderation-title">{{ recipe.title }}</h1>
+                            <div class="moderation-status {{ recipe.moderation_status }}">
+                                {% if recipe.moderation_status == 'pending' %}<i class="fas fa-hourglass-half me-1"></i> На модерации{% endif %}
+                                {% if recipe.moderation_status == 'approved' %}<i class="fas fa-check me-1"></i> Одобрен{% endif %}
+                                {% if recipe.moderation_status == 'rejected' %}<i class="fas fa-times me-1"></i> Отклонён{% endif %}
+                            </div>
+                            <div class="text-muted mb-3">Автор: {{ recipe.author.first_name }} {{ recipe.author.last_name }} | {{ recipe.created_at|date:"d.m.Y H:i" }}</div>
+                            <p class="lead mb-4">{{ recipe.description }}</p>
+                            <div class="moderation-meta mb-4">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock me-2"></i> {{ recipe.prep_time|default:'—' }} мин
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-fire me-2"></i> {{ recipe.cook_time|default:'—' }} мин
+                                </div>
+                                {% if recipe.categories.all %}
+                                <div class="meta-item">
+                                    <i class="fas fa-tags me-2"></i>
+                                    {% for cat in recipe.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="section-card">
+                    <h3 class="section-title">Ингредиенты</h3>
+                    <div class="ps-2">{{ recipe.ingredients|linebreaks }}</div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="section-card">
+                    <h3 class="section-title">Шаги приготовления</h3>
+                    <ol class="ps-2" style="padding-left: 1.2em;">
+                        {% for step in instructions_list %}
+                            {% if step.strip %}
+                                <li style="margin-bottom: 0.7em; line-height: 1.6;">{{ step|linebreaksbr }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

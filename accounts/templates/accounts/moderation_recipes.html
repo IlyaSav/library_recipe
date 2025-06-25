@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% block title %}🔥 Модерация рецептов 🔥{% endblock %}
+{% block content %}
+<style>
+.moderation-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+.moderation-header {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ff6b6b;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+}
+.moderation-header:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b6b, #ffa502, #ff6b6b);
+    border-radius: 2px;
+}
+.moderation-card {
+    display: flex;
+    gap: 1.5rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(255, 107, 107, 0.15);
+    overflow: hidden;
+    margin-bottom: 3rem;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    position: relative;
+}
+.moderation-card:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(to bottom, #ff6b6b, #ffa502);
+}
+.moderation-card:hover {
+    box-shadow: 0 14px 40px rgba(255, 107, 107, 0.25);
+    transform: translateY(-5px);
+}
+.moderation-card-img {
+    width: 240px;
+    height: 200px;
+    object-fit: cover;
+    background: linear-gradient(45deg, #ffe8e8, #fff5e6);
+    border-radius: 16px 0 0 16px;
+    flex-shrink: 0;
+    align-self: center;
+    transition: transform 0.3s;
+}
+.moderation-card:hover .moderation-card-img {
+    transform: scale(1.03);
+}
+.moderation-card-body {
+    flex: 1;
+    padding: 1.8rem 1.8rem 1.8rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.moderation-card-title {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #ff6b6b;
+    margin-bottom: 0.7rem;
+    letter-spacing: -0.5px;
+    transition: color 0.2s;
+}
+.moderation-card:hover .moderation-card-title {
+    color: #ff4757;
+}
+.moderation-card-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    font-size: 0.95em;
+}
+.moderation-card-meta .meta-item {
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: 50px;
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-weight: 600;
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.2);
+}
+.moderation-card-author {
+    color: #ffa502;
+    font-size: 0.95em;
+    margin-bottom: 0.8em;
+    font-weight: 500;
+}
+.moderation-card-desc {
+    color: #666;
+    margin-bottom: 1.2em;
+    font-size: 1.05em;
+    line-height: 1.5;
+}
+.moderation-card-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+.btn-approve {
+    background: linear-gradient(135deg, #2ed573, #7bed9f);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(46, 213, 115, 0.3);
+    transition: all 0.3s;
+}
+.btn-approve:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46, 213, 115, 0.4);
+}
+.btn-reject {
+    background: linear-gradient(135deg, #ff6b6b, #ff8787);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    transition: all 0.3s;
+}
+.btn-reject:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+.external-link-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: #fff;
+    background: rgba(0,0,0,0.2);
+    border-radius: 50%;
+    padding: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    backdrop-filter: blur(5px);
+    z-index: 2;
+}
+.external-link-btn:hover {
+    background: rgba(0,0,0,0.3);
+    transform: rotate(45deg) scale(1.1);
+    color: #fff;
+}
+.no-recipes {
+    font-size: 1.2rem;
+    color: #ff6b6b;
+    text-align: center;
+    padding: 3rem;
+    background: rgba(255, 107, 107, 0.05);
+    border-radius: 16px;
+    border: 2px dashed rgba(255, 107, 107, 0.3);
+}
+@media (max-width: 768px) {
+    .moderation-card {
+        flex-direction: column;
+    }
+    .moderation-card-img {
+        width: 100%;
+        height: 220px;
+        border-radius: 16px 16px 0 0;
+    }
+    .moderation-card-body {
+        padding: 1.5rem;
+    }
+    .moderation-header {
+        font-size: 2rem;
+    }
+}
+</style>
+
+<div class="moderation-container">
+    <h2 class="moderation-header">Модерация рецептов</h2>
+    
+    {% if pending_recipes %}
+        {% for recipe in pending_recipes %}
+            <div class="moderation-card">
+                <a href="{% url 'moderation_recipe_detail' recipe.id %}" target="_blank" class="external-link-btn">
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+                
+                {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" class="moderation-card-img" alt="{{ recipe.title }}">
+                {% else %}
+                    <div class="moderation-card-img" style="display: flex; align-items: center; justify-content: center; color: #ff6b6b; font-weight: bold;">
+                        Нет фото
+                    </div>
+                {% endif %}
+                
+                <div class="moderation-card-body">
+                    <div>
+                        <a href="{% url 'moderation_recipe_detail' recipe.id %}" target="_blank" style="text-decoration: none;">
+                            <div class="moderation-card-title">{{ recipe.title }}</div>
+                        </a>
+                        
+                        <div class="moderation-card-meta">
+                            <div class="meta-item"><i class="fas fa-clock me-1"></i> {{ recipe.prep_time|default:'—' }} мин</div>
+                            <div class="meta-item"><i class="fas fa-fire me-1"></i> {{ recipe.cook_time|default:'—' }} мин</div>
+                            {% if recipe.categories.all %}
+                                <div class="meta-item"><i class="fas fa-tags me-1"></i>
+                                    {% for cat in recipe.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="moderation-card-author">
+                            <i class="fas fa-user me-1"></i> {{ recipe.author.first_name }} {{ recipe.author.last_name }} | {{ recipe.created_at|date:"d.m.Y H:i" }}
+                        </div>
+                        
+                        <div class="moderation-card-desc">{{ recipe.description|truncatechars:200|linebreaks }}</div>
+                    </div>
+                    
+                    <form method="post" class="moderation-card-actions">
+                        {% csrf_token %}
+                        <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+                        <button type="submit" name="action" value="approve" class="btn btn-approve">
+                            <i class="fas fa-check-circle me-1"></i> Одобрить
+                        </button>
+                        <button type="submit" name="action" value="reject" class="btn btn-reject">
+                            <i class="fas fa-times-circle me-1"></i> Отклонить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-recipes">
+            <i class="fas fa-check-circle fa-2x mb-3" style="color: rgba(255, 107, 107, 0.3);"></i>
+            <p>Все рецепты проверены!<br>Нет новых на модерации.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

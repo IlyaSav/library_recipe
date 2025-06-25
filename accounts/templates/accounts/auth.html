@@ -1,0 +1,441 @@
+{% extends 'base.html' %}
+
+{% block title %}Кулинарная энциклопедия | Вход / Регистрация{% endblock %}
+
+{% block content %}
+<div class="encyclopedia-container">
+    <div class="encyclopedia-header">
+        <div class="header-content">
+            <h1 class="encyclopedia-title">Кулинарная энциклопедия</h1>
+            <p class="encyclopedia-subtitle">Добро пожаловать в наше кулинарное сообщество</p>
+        </div>
+        <div class="library-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-12a1 1 0 0 0-1-1H3z"/>
+                <path d="M9.5 14a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-1 0v9a.5.5 0 0 0 .5.5z"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="auth-shelf">
+        <div class="shelf-header">
+            <h2 class="shelf-title">Вход и регистрация</h2>
+            <div class="shelf-decoration"></div>
+        </div>
+        
+        <div class="auth-book">
+            <div class="book-cover auth">
+                <div class="book-image-placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                    </svg>
+                </div>
+                <div class="book-spine"></div>
+            </div>
+            
+            <div class="auth-content">
+                <ul class="nav nav-tabs mb-4" id="authTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Вход</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab" aria-controls="register" aria-selected="false">Регистрация</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="authTabContent">
+                    <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+                        <form method="post" class="auth-form">
+                            {% csrf_token %}
+                            {{ login_form.non_field_errors }}
+                            <div class="form-group">
+                                <label for="id_username">Email</label>
+                                <div class="input-with-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
+                                    </svg>
+                                    {{ login_form.username }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_password">Пароль</label>
+                                <div class="input-with-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                                    </svg>
+                                    {{ login_form.password }}
+                                </div>
+                            </div>
+                            {% if login_error %}<div class="error-message">{{ login_error }}</div>{% endif %}
+                            <button type="submit" name="login_submit" class="auth-button">Войти</button>
+                        </form>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                        <form method="post" class="auth-form">
+                            {% csrf_token %}
+                            {{ register_form.non_field_errors }}
+                            <div class="form-group">
+                                <label for="id_first_name">Имя</label>
+                                <div class="input-with-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                    </svg>
+                                    {{ register_form.first_name }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_last_name">Фамилия</label>
+                                <div class="input-with-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                    </svg>
+                                    {{ register_form.last_name }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_email">Email</label>
+                                <div class="input-with-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
+                                    </svg>
+                                    {{ register_form.email }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_password1">Пароль</label>
+                                <div class="input-with-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                                    </svg>
+                                    {{ register_form.password1 }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_password2">Подтверждение пароля</label>
+                                <div class="input-with-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                                    </svg>
+                                    {{ register_form.password2 }}
+                                </div>
+                            </div>
+                            {% if register_error %}<div class="error-message">{{ register_error }}</div>{% endif %}
+                            <button type="submit" name="register_submit" class="auth-button">Зарегистрироваться</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #8B4513;
+        --secondary-color: #A0522D;
+        --light-brown: #D2B48C;
+        --cream: #F5F5DC;
+        --dark-text: #3E2723;
+        --light-text: #5D4037;
+    }
+
+    .encyclopedia-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        background-color: #f9f5f0;
+        font-family: 'Georgia', serif;
+    }
+
+    .encyclopedia-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--light-brown);
+        position: relative;
+    }
+
+    .encyclopedia-header::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--light-brown), transparent);
+    }
+
+    .encyclopedia-title {
+        font-size: 2.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .encyclopedia-subtitle {
+        font-size: 1.2rem;
+        color: var(--light-text);
+        margin: 0.5rem 0 0 0;
+        font-style: italic;
+    }
+
+    .library-icon {
+        color: var(--primary-color);
+        opacity: 0.7;
+    }
+
+    .auth-shelf {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e0d6c9;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .shelf-header {
+        margin-bottom: 2.5rem;
+        position: relative;
+        text-align: center;
+    }
+
+    .shelf-decoration {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+
+    .shelf-decoration::before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+
+    .shelf-title {
+        display: inline-block;
+        font-size: 1.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        padding: 0 1rem;
+        background: white;
+        position: relative;
+        z-index: 1;
+    }
+
+    .auth-book {
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    .book-cover.auth {
+        width: 200px;
+        height: 280px;
+        border-radius: 10px;
+        background: #f1e8dd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(139,69,19,0.1);
+        flex-shrink: 0;
+    }
+
+    .book-image-placeholder {
+        color: var(--light-text);
+    }
+
+    .book-spine {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 8px;
+        height: 100%;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        transform: translateX(-8px) rotateY(60deg);
+        transform-origin: right center;
+        border-radius: 2px 0 0 2px;
+    }
+
+    .auth-content {
+        flex: 1;
+    }
+
+    .nav-tabs {
+        border-bottom: 1px solid var(--light-brown);
+    }
+
+    .nav-link {
+        color: var(--light-text);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: var(--primary-color);
+    }
+
+    .nav-link.active {
+        color: var(--primary-color);
+        font-weight: 600;
+        background: none;
+    }
+
+    .nav-link.active::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--primary-color);
+    }
+
+    .auth-form {
+        margin-top: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--dark-text);
+        font-weight: 500;
+    }
+
+    .input-with-icon {
+        position: relative;
+    }
+
+    .input-with-icon svg {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--light-text);
+        opacity: 0.7;
+    }
+
+    .auth-form input[type="text"],
+    .auth-form input[type="email"],
+    .auth-form input[type="password"] {
+        width: 100%;
+        padding: 0.8rem 1rem 0.8rem 2.5rem;
+        border: 1px solid var(--light-brown);
+        border-radius: 4px;
+        font-size: 1rem;
+        background-color: var(--cream);
+        font-family: 'Georgia', serif;
+        transition: all 0.3s ease;
+    }
+
+    .auth-form input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+    }
+
+    .auth-button {
+        width: 100%;
+        padding: 0.8rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 0.5rem;
+    }
+
+    .auth-button:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+
+    .error-message {
+        color: #dc3545;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .encyclopedia-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .library-icon {
+            display: none;
+        }
+
+        .encyclopedia-title {
+            font-size: 2.2rem;
+        }
+
+        .auth-book {
+            flex-direction: column;
+        }
+
+        .book-cover.auth {
+            width: 100%;
+            height: 150px;
+        }
+
+        .book-spine {
+            display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .encyclopedia-title {
+            font-size: 1.8rem;
+        }
+
+        .auth-shelf {
+            padding: 1.5rem;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<script>
+    // Bootstrap tabs: сохраняем активную вкладку
+    document.addEventListener('DOMContentLoaded', function() {
+        var triggerTabList = [].slice.call(document.querySelectorAll('#authTab button'));
+        triggerTabList.forEach(function(triggerEl) {
+            triggerEl.addEventListener('click', function (event) {
+                localStorage.setItem('activeAuthTab', event.target.id);
+            });
+        });
+        var activeTab = localStorage.getItem('activeAuthTab');
+        if (activeTab) {
+            var tab = document.getElementById(activeTab);
+            if (tab) new bootstrap.Tab(tab).show();
+        }
+    });
+</script>
+{% endblock %}

@@ -3,14 +3,19 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import User, Recipe, Comment, Article
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True, label='Email')
+    email = forms.EmailField(required=True, label='Email', widget=forms.EmailInput(attrs={'autocomplete': 'email'}))
+    first_name = forms.CharField(required=True, label='Имя', widget=forms.TextInput(attrs={'autocomplete': 'given-name'}))
+    last_name = forms.CharField(required=True, label='Фамилия', widget=forms.TextInput(attrs={'autocomplete': 'family-name'}))
+    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}))
+    password2 = forms.CharField(label='Подтверждение пароля', widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}))
 
     class Meta:
         model = User
-        fields = ('email', 'password1', 'password2')
+        fields = ('email', 'first_name', 'last_name', 'password1', 'password2')
 
 class UserLoginForm(AuthenticationForm):
-    username = forms.EmailField(label='Email')
+    username = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'autocomplete': 'username'}))
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'}))
 
 class RecipeForm(forms.ModelForm):
     title = forms.CharField(

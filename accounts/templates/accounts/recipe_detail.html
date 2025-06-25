@@ -201,7 +201,7 @@
                 {% for comment in comments %}
                 <div class="comment-card">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="comment-author">{{ comment.author.email }}</span>
+                        <span class="comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
                         <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
                     </div>
                     <div class="mb-3">

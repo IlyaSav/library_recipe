@@ -37,7 +37,7 @@
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle me-1"></i>{{ user.email }}
+                        <i class="fas fa-user-circle me-1"></i>{{ user.first_name }} {{ user.last_name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
@@ -47,6 +47,16 @@
                         </li>
                         {% if user.is_staff %}
                         <li>
+                            <a class="dropdown-item" href="{% url 'moderation_recipes' %}">
+                                <i class="fas fa-shield-alt me-2"></i>Модерация рецептов
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'admin_recipes_table' %}">
+                                <i class="fas fa-table me-2"></i>Все рецепты (таблица)
+                            </a>
+                        </li>
+                        <li>
                             <a class="dropdown-item" href="{% url 'article_create' %}">
                                 <i class="fas fa-pen-nib me-2"></i>Создать статью
                             </a>
@@ -54,9 +64,12 @@
                         {% endif %}
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item text-danger" href="{% url 'logout' %}">
-                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
-                            </a>
+                            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item logout-btn" style="background:none;border:none;padding:0;margin:0;cursor:pointer;">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 </li>
@@ -228,6 +241,27 @@
     .nav-link {
         font-size: 13px;
     }
+}
+
+.dropdown-item.logout-btn {
+    background: linear-gradient(90deg, #f8d7da 0%, #fff 100%);
+    color: #d63031 !important;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(214,48,49,0.07);
+}
+.dropdown-item.logout-btn:hover {
+    background: #d63031 !important;
+    color: #fff !important;
+    transform: translateX(4px) scale(1.04);
+}
+.dropdown-item.logout-btn i {
+    color: #d63031;
+    transition: color 0.2s;
+}
+.dropdown-item.logout-btn:hover i {
+    color: #fff;
 }
 </style>
 

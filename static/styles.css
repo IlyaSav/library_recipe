@@ -1,0 +1,14 @@
+/* Сделать все выпадающие списки непрозрачными */
+.dropdown-menu, select, .dropdown-menu * {
+    background: #fff !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    color: #222 !important;
+}
+
+/* Для Bootstrap dropdown стрелки */
+.dropdown-menu::before, .dropdown-menu::after {
+    background: #fff !important;
+    opacity: 1 !important;
+}

@@ -56,6 +56,13 @@ class Recipe(models.Model):
     cook_time = models.PositiveIntegerField(null=True, blank=True, help_text='Время готовки в минутах')
     image = models.ImageField(upload_to='recipe_images/', null=True, blank=True)
     
+    MODERATION_STATUS_CHOICES = [
+        ('pending', 'На модерации'),
+        ('approved', 'Одобрен'),
+        ('rejected', 'Отклонён'),
+    ]
+    moderation_status = models.CharField(max_length=10, choices=MODERATION_STATUS_CHOICES, default='pending')
+
     def __str__(self):
         return self.title
 

@@ -276,10 +276,12 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="user-avatar">
-                    <div class="avatar-placeholder">{{ user.email|first|upper }}</div>
+                    <div class="avatar-placeholder">{{ user.first_name|default:"?"|first|upper }}{{ user.last_name|default:"?"|first|upper }}</div>
                 </div>
                 
                 <div class="user-info">
+                    <p><b>Имя:</b> <span>{{ user.first_name }}</span></p>
+                    <p><b>Фамилия:</b> <span>{{ user.last_name }}</span></p>
                     <p><b>Email:</b> <span>{{ user.email }}</span></p>
                     <p><b>Дата регистрации:</b> <span>{{ user.date_joined|date:"d.m.Y" }}</span></p>
                     <p><b>Рецептов:</b> <span>{{ user.recipes.count }}</span></p>
@@ -288,6 +290,48 @@
             </div>
 
             <div class="col-md-8">
+                <h2 class="section-title">Мои рецепты</h2>
+                {% if user_recipes %}
+                    <div class="recipe-grid">
+                        {% for recipe in user_recipes %}
+                        <div class="recipe-card" style="position:relative;">
+                            {% if recipe.image %}
+                                <img src="{{ recipe.image.url }}" class="recipe-image" alt="{{ recipe.title }}">
+                            {% else %}
+                                <div class="recipe-image-placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
+                                    </svg>
+                                </div>
+                            {% endif %}
+                            <div class="recipe-content">
+                                <h3 class="recipe-title">{{ recipe.title }}</h3>
+                                <p class="recipe-description">{{ recipe.description|truncatechars:80 }}</p>
+                                <div style="margin-bottom: 0.7em;">
+                                    <span class="moderation-status {{ recipe.moderation_status }}" style="font-size:0.95em;">
+                                        {% if recipe.moderation_status == 'pending' %}<i class="fas fa-hourglass-half me-1"></i> На модерации{% endif %}
+                                        {% if recipe.moderation_status == 'approved' %}<i class="fas fa-check me-1"></i> Одобрен{% endif %}
+                                        {% if recipe.moderation_status == 'rejected' %}<i class="fas fa-times me-1"></i> Отклонён{% endif %}
+                                    </span>
+                                    <span class="text-muted" style="font-size:0.92em; float:right;">{{ recipe.created_at|date:"d.m.Y H:i" }}</span>
+                                </div>
+                                <a href="{% url 'recipe_detail' recipe.id %}" class="view-recipe-btn">Смотреть рецепт</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                            </svg>
+                        </div>
+                        <p class="empty-state-text">Вы ещё не создали ни одного рецепта</p>
+                        <a href="{% url 'recipe_create' %}" class="view-recipe-btn">Создать рецепт</a>
+                    </div>
+                {% endif %}
+
                 <h2 class="section-title">Избранные рецепты</h2>
                 {% if favorite_recipes %}
                     <div class="recipe-grid">

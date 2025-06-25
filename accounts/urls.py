@@ -1,10 +1,9 @@
 from django.urls import path
 from . import views
-from .views import articles_list_view, article_create_view, menu_for_week_view
+from .views import articles_list_view, article_create_view, menu_for_week_view, moderation_recipes_view, auth_view, login_view, register_view
 
 urlpatterns = [
-    path('register/', views.register_view, name='register'),
-    path('login/', views.login_view, name='login'),
+    path('auth/', auth_view, name='auth'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile_view, name='profile'),
     path('recipes/create/', views.recipe_create_view, name='recipe_create'),
@@ -19,4 +18,9 @@ urlpatterns = [
     path('articles/', articles_list_view, name='articles_list'),
     path('articles/create/', article_create_view, name='article_create'),
     path('menu-for-week/', menu_for_week_view, name='menu_for_week'),
+    path('moderation/', moderation_recipes_view, name='moderation_recipes'),
+    path('moderation/recipe/<int:recipe_id>/', views.moderation_recipe_detail_view, name='moderation_recipe_detail'),
+    path('admin/recipes-table/', views.admin_recipes_table_view, name='admin_recipes_table'),
+    path('login/', login_view, name='login'),
+    path('register/', register_view, name='register'),
 ]
