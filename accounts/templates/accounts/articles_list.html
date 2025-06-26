@@ -1,22 +1,228 @@
 {% extends 'base.html' %}
 {% block title %}Статьи{% endblock %}
 {% block content %}
-<div class="container" style="max-width: 900px;">
-    <h2 class="mb-4">Статьи</h2>
-    {% if articles %}
-        <div class="list-group">
-            {% for article in articles %}
-                <div class="list-group-item mb-3" style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); background: #fff;">
-                    <h4 class="mb-2">{{ article.title }}</h4>
-                    <div class="mb-2 text-muted" style="font-size: 0.95em;">
-                        Автор: {{ article.author.username }} | {{ article.created_at|date:"d.m.Y H:i" }}
-                    </div>
-                    <div>{{ article.content|linebreaks }}</div>
-                </div>
-            {% endfor %}
+<div class="encyclopedia-container">
+    <div class="encyclopedia-header">
+        <div class="header-content">
+            <h1 class="encyclopedia-title">Статьи</h1>
+            <p class="encyclopedia-subtitle">Интересные материалы и советы от пользователей</p>
         </div>
-    {% else %}
-        <p>Пока нет статей.</p>
-    {% endif %}
+        <div class="library-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z"/>
+                <path d="M9.5 14a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-1 0v9a.5.5 0 0 0 .5.5z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="encyclopedia-shelves">
+        <div class="shelf-header">
+            <h2 class="shelf-title">Все статьи</h2>
+            <div class="shelf-decoration"></div>
+        </div>
+        <div class="book-grid" style="grid-template-columns: repeat(2, 1fr); gap: 2rem;">
+            {% if articles %}
+                {% for article in articles %}
+                <div class="recipe-book" style="min-height:unset;">
+                    <div class="book-info">
+                        <h3 class="book-title" style="font-size:1.3rem;">{{ article.title }}</h3>
+                        <div class="book-meta" style="margin-bottom:0.7rem;">
+                            <span class="book-author">Автор: {{ article.author.username }}</span>
+                            <span class="book-pages">{{ article.created_at|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        <div class="book-description" style="margin-bottom:0;">{{ article.content|linebreaks }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-library">
+                    <div class="empty-book">
+                        <div class="book-cover empty">
+                            <div class="book-image-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z"/>
+                                </svg>
+                            </div>
+                            <div class="book-spine"></div>
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">Пока нет статей</h3>
+                            <p class="book-description">Будьте первым, кто поделится полезной информацией!</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
+
+<style>
+    :root {
+        --primary-color: #8B4513;
+        --secondary-color: #A0522D;
+        --light-brown: #D2B48C;
+        --cream: #F5F5DC;
+        --dark-text: #3E2723;
+        --light-text: #5D4037;
+    }
+    .encyclopedia-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        background-color: #f9f5f0;
+        font-family: 'Georgia', serif;
+    }
+    .encyclopedia-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--light-brown);
+        position: relative;
+    }
+    .encyclopedia-header::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--light-brown), transparent);
+    }
+    .encyclopedia-title {
+        font-size: 2.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    .encyclopedia-subtitle {
+        font-size: 1.2rem;
+        color: var(--light-text);
+        margin: 0.5rem 0 0 0;
+        font-style: italic;
+    }
+    .library-icon {
+        color: var(--primary-color);
+        opacity: 0.7;
+    }
+    .encyclopedia-shelves {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e0d6c9;
+    }
+    .shelf-header {
+        margin-bottom: 2.5rem;
+        position: relative;
+        text-align: center;
+    }
+    .shelf-decoration {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+    .shelf-decoration::before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+    .shelf-title {
+        display: inline-block;
+        font-size: 1.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        padding: 0 1rem;
+        background: white;
+        position: relative;
+        z-index: 1;
+    }
+    .book-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    .recipe-book {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(139,69,19,0.07), 0 1.5px 6px rgba(139,69,19,0.04);
+        transition: box-shadow 0.2s, transform 0.2s;
+        padding: 1.2rem 1.2rem 1.1rem 1.2rem;
+        min-height: 220px;
+        position: relative;
+    }
+    .recipe-book:hover {
+        box-shadow: 0 8px 32px rgba(139,69,19,0.13), 0 2px 8px rgba(139,69,19,0.08);
+        transform: translateY(-3px) scale(1.015);
+        z-index: 2;
+    }
+    .book-info {
+        flex: 1;
+    }
+    .book-title {
+        font-size: 1.2rem;
+        color: var(--dark-text);
+        margin: 0 0 0.5rem 0;
+        font-weight: 600;
+    }
+    .book-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.9rem;
+        color: var(--light-text);
+    }
+    .book-author,
+    .book-pages {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .book-author {
+        color: var(--dark-text);
+    }
+    .book-pages {
+        color: var(--dark-text);
+    }
+    .book-description {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--light-text);
+        margin-bottom: 1.2rem;
+    }
+    .empty-library {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 2rem;
+    }
+    .empty-book {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        max-width: 300px;
+    }
+    .book-cover.empty {
+        width: 150px;
+        height: 200px;
+    }
+    @media (max-width: 900px) {
+        .book-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %} 

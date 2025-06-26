@@ -3,241 +3,263 @@
 {% block title %}Создать рецепт{% endblock %}
 
 {% block content %}
-<div class="recipe-form-container">
-    <div class="recipe-form-card">
-        <h1 class="recipe-form-title">Создать новый рецепт</h1>
-        
-<form method="post" enctype="multipart/form-data" novalidate class="recipe-form">
-    {% csrf_token %}
-    
-    <div class="form-group">
-        <label for="{{ form.title.id_for_label }}" class="form-label">Название блюда</label>
-        {{ form.title }}
-        {% if form.title.errors %}
-            <div class="error-message">{{ form.title.errors.as_text }}</div>
-        {% endif %}
-    </div>
-    
-    <div class="form-group">
-        <label for="{{ form.description.id_for_label }}" class="form-label">Описание</label>
-        {{ form.description }}
-        {% if form.description.errors %}
-            <div class="error-message">{{ form.description.errors.as_text }}</div>
-        {% endif %}
-    </div>
-    
-    <div class="form-group">
-        <label for="{{ form.ingredients.id_for_label }}" class="form-label">Продукты</label>
-        {{ form.ingredients }}
-        {% if form.ingredients.errors %}
-            <div class="error-message">{{ form.ingredients.errors.as_text }}</div>
-        {% endif %}
-    </div>
-    
-    <div class="form-group">
-        <label for="{{ form.steps.id_for_label }}" class="form-label">Шаги приготовления</label>
-        {{ form.steps }}
-        {% if form.steps.errors %}
-            <div class="error-message">{{ form.steps.errors.as_text }}</div>
-        {% endif %}
-    </div>
-    
-    <div class="form-group">
-        <label for="{{ form.prep_time.id_for_label }}" class="form-label">Время приготовления (мин)</label>
-        {{ form.prep_time }}
-        {% if form.prep_time.errors %}
-            <div class="error-message">{{ form.prep_time.errors.as_text }}</div>
-        {% endif %}
-    </div>
-    
-    <div class="form-group">
-        <label for="{{ form.cook_time.id_for_label }}" class="form-label">Время готовки (мин)</label>
-        {{ form.cook_time }}
-        {% if form.cook_time.errors %}
-            <div class="error-message">{{ form.cook_time.errors.as_text }}</div>
-        {% endif %}
-    </div>
-    
-    <div class="form-group">
-        <label for="{{ form.image.id_for_label }}" class="form-label">Изображение блюда</label>
-        {{ form.image }}
-        {% if form.image.errors %}
-            <div class="error-message">{{ form.image.errors.as_text }}</div>
-        {% endif %}
-    </div>
-    
-    <div class="form-group">
-        <label class="form-label">Категории</label>
-        <div class="categories-container">
-            {{ form.categories }}
+<div class="encyclopedia-container">
+    <div class="encyclopedia-header">
+        <div class="header-content">
+            <h1 class="encyclopedia-title">Добавить новый рецепт</h1>
+            <p class="encyclopedia-subtitle">Поделитесь своим кулинарным шедевром с миром!</p>
         </div>
-        {% if form.categories.errors %}
-            <div class="error-message">{{ form.categories.errors.as_text }}</div>
-        {% endif %}
+        
     </div>
-    
-    <button type="submit" class="submit-button">
-        <span class="button-text">Создать рецепт</span>
-        <span class="button-icon">→</span>
-    </button>
-</form>
+    <div class="encyclopedia-shelves">
+        <div class="shelf-header">
+            <h2 class="shelf-title">Форма добавления рецепта</h2>
+            <div class="shelf-decoration"></div>
+        </div>
+        <form method="post" enctype="multipart/form-data" novalidate style="max-width: 700px; margin: 0 auto;">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}" class="form-label">Название блюда</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="error-message">{{ form.title.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}" class="form-label">Описание</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="error-message">{{ form.description.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.ingredients.id_for_label }}" class="form-label">Продукты</label>
+                {{ form.ingredients }}
+                {% if form.ingredients.errors %}
+                    <div class="error-message">{{ form.ingredients.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.steps.id_for_label }}" class="form-label">Шаги приготовления</label>
+                {{ form.steps }}
+                {% if form.steps.errors %}
+                    <div class="error-message">{{ form.steps.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.prep_time.id_for_label }}" class="form-label">Время подготовки (мин)</label>
+                {{ form.prep_time }}
+                {% if form.prep_time.errors %}
+                    <div class="error-message">{{ form.prep_time.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.cook_time.id_for_label }}" class="form-label">Время готовки (мин)</label>
+                {{ form.cook_time }}
+                {% if form.cook_time.errors %}
+                    <div class="error-message">{{ form.cook_time.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.image.id_for_label }}" class="form-label">Изображение блюда</label>
+                {{ form.image }}
+                {% if form.image.errors %}
+                    <div class="error-message">{{ form.image.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label class="form-label">Категории</label>
+                <div class="categories-container">
+                    {{ form.categories }}
+                </div>
+                {% if form.categories.errors %}
+                    <div class="error-message">{{ form.categories.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <button type="submit" class="read-button" style="width:100%;font-size:1.1rem;">Создать рецепт</button>
+        </form>
     </div>
 </div>
 
 <style>
-    .recipe-form-container {
-        max-width: 800px;
-        margin: 2rem auto;
-        padding: 0 1rem;
+    :root {
+        --primary-color: #8B4513;
+        --secondary-color: #A0522D;
+        --light-brown: #D2B48C;
+        --cream: #F5F5DC;
+        --dark-text: #3E2723;
+        --light-text: #5D4037;
     }
-    
-    .recipe-form-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-        padding: 2.5rem;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    .encyclopedia-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        background-color: #f9f5f0;
+        font-family: 'Georgia', serif;
     }
-    
-    .recipe-form-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-    }
-    
-    .recipe-form-title {
-        color: #2d3436;
-        font-size: 2rem;
-        margin-bottom: 1.5rem;
-        text-align: center;
-        font-weight: 700;
+    .encyclopedia-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--light-brown);
         position: relative;
     }
-    
-    .recipe-form-title:after {
-        content: '';
-        display: block;
-        width: 60px;
-        height: 4px;
-        background: #6c5ce7;
-        margin: 0.5rem auto 0;
-        border-radius: 2px;
+    .encyclopedia-header::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--light-brown), transparent);
     }
-    
-    .recipe-form {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
+    .encyclopedia-title {
+        font-size: 2.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: 1px;
     }
-    
+    .encyclopedia-subtitle {
+        font-size: 1.2rem;
+        color: var(--light-text);
+        margin: 0.5rem 0 0 0;
+        font-style: italic;
+    }
+    .library-icon {
+        color: var(--primary-color);
+        opacity: 0.7;
+    }
+    .encyclopedia-shelves {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e0d6c9;
+    }
+    .shelf-header {
+        margin-bottom: 2.5rem;
+        position: relative;
+        text-align: center;
+    }
+    .shelf-decoration {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+    .shelf-decoration::before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+    .shelf-title {
+        display: inline-block;
+        font-size: 1.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        padding: 0 1rem;
+        background: white;
+        position: relative;
+        z-index: 1;
+    }
+    form {
+        background: none;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+    }
     .form-group {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
+        margin-bottom: 1.3rem;
     }
-    
     .form-label {
         font-weight: 600;
-        color: #2d3436;
+        color: var(--dark-text);
         font-size: 1rem;
     }
-    
     input, textarea, select {
         padding: 0.9rem 1.2rem;
-        border: 2px solid #b2bec3;
+        border: 1.5px solid var(--light-brown);
         border-radius: 10px;
         font-size: 1rem;
         transition: all 0.3s ease;
-        background-color: white;
-        color: #2d3436;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        background-color: var(--cream);
+        color: var(--dark-text);
+        box-shadow: 0 2px 5px rgba(139,69,19,0.04);
+        font-family: 'Georgia', serif;
     }
-    
     input:focus, textarea:focus, select:focus {
         outline: none;
-        border-color: #6c5ce7;
-        box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.25);
-        background-color: white;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.13);
+        background-color: #fff;
     }
-    
     textarea {
-        min-height: 140px;
+        min-height: 120px;
         resize: vertical;
         line-height: 1.5;
     }
-    
     .error-message {
         color: #d63031;
         font-size: 0.9rem;
         margin-top: 0.3rem;
         font-weight: 500;
     }
-    
     .categories-container {
         display: flex;
         flex-wrap: wrap;
         gap: 0.8rem;
         padding: 0.8rem;
-        background: #f8f9fa;
+        background: #f9f5f0;
         border-radius: 10px;
-        border: 2px solid #dfe6e9;
+        border: 1.5px solid #e0d6c9;
     }
-    
     .categories-container div {
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
-    
     .categories-container label {
         cursor: pointer;
         font-size: 0.95rem;
     }
-    
-    .submit-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+    .read-button {
+        display: inline-block;
+        padding: 0.5rem 1.2rem;
+        background: var(--primary-color);
         color: white;
-        border: none;
-        padding: 1.1rem 1.8rem;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 1rem;
         font-weight: 600;
         transition: all 0.3s ease;
-        margin-top: 1.5rem;
-        width: 100%;
-        letter-spacing: 0.5px;
+        border: none;
+        margin-top: 1.2rem;
     }
-    
-    .submit-button:hover {
-        background: linear-gradient(135deg, #5d4aec 0%, #8c7ae6 100%);
-        transform: translateY(-3px);
-        box-shadow: 0 6px 15px rgba(108, 92, 231, 0.4);
+    .read-button:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
     }
-    
-    .button-icon {
-        font-size: 1.3rem;
-        transition: transform 0.3s ease;
-    }
-    
-    .submit-button:hover .button-icon {
-        transform: translateX(5px);
-    }
-    
     @media (max-width: 768px) {
-        .recipe-form-card {
-            padding: 1.8rem;
+        .encyclopedia-shelves {
+            padding: 1.2rem;
         }
-        
-        .recipe-form-title {
-            font-size: 1.7rem;
+        .encyclopedia-title {
+            font-size: 2rem;
         }
-        
         input, textarea, select {
-            padding: 0.8rem 1rem;
+            padding: 0.7rem 1rem;
         }
     }
 </style>

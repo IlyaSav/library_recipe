@@ -1,22 +1,201 @@
 {% extends 'base.html' %}
 {% block title %}Создать статью{% endblock %}
 {% block content %}
-<div class="container" style="max-width: 700px;">
-    <h2 class="mb-4">Создать статью</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-        <div class="form-group mb-3">
-            {{ form.title.label_tag }}
-            {{ form.title }}
-            {{ form.title.errors }}
+<div class="encyclopedia-container">
+    <div class="encyclopedia-header">
+        <div class="header-content">
+            <h1 class="encyclopedia-title">Добавить новую статью</h1>
         </div>
-        <div class="form-group mb-3">
-            {{ form.content.label_tag }}
-            {{ form.content }}
-            {{ form.content.errors }}
+    </div>
+    <div class="encyclopedia-shelves">
+        <div class="shelf-header">
+            <h2 class="shelf-title">Форма добавления статьи</h2>
+            <div class="shelf-decoration"></div>
         </div>
-        <button type="submit" class="btn btn-primary">Создать статью</button>
-    </form>
+        <form method="post" novalidate style="max-width: 700px; margin: 0 auto;">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}" class="form-label">Тема статьи</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="error-message">{{ form.title.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.content.id_for_label }}" class="form-label">Текст статьи</label>
+                {{ form.content }}
+                {% if form.content.errors %}
+                    <div class="error-message">{{ form.content.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <button type="submit" class="read-button" style="width:100%;font-size:1.1rem;">Создать статью</button>
+        </form>
+    </div>
 </div>
+
+<style>
+    :root {
+        --primary-color: #8B4513;
+        --secondary-color: #A0522D;
+        --light-brown: #D2B48C;
+        --cream: #F5F5DC;
+        --dark-text: #3E2723;
+        --light-text: #5D4037;
+    }
+    .encyclopedia-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        background-color: #f9f5f0;
+        font-family: 'Georgia', serif;
+    }
+    .encyclopedia-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--light-brown);
+        position: relative;
+    }
+    .encyclopedia-header::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--light-brown), transparent);
+    }
+    .encyclopedia-title {
+        font-size: 2.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    .encyclopedia-subtitle {
+        font-size: 1.2rem;
+        color: var(--light-text);
+        margin: 0.5rem 0 0 0;
+        font-style: italic;
+    }
+    .library-icon {
+        color: var(--primary-color);
+        opacity: 0.7;
+    }
+    .encyclopedia-shelves {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e0d6c9;
+    }
+    .shelf-header {
+        margin-bottom: 2.5rem;
+        position: relative;
+        text-align: center;
+    }
+    .shelf-decoration {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+    .shelf-decoration::before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
+    }
+    .shelf-title {
+        display: inline-block;
+        font-size: 1.8rem;
+        color: var(--dark-text);
+        margin: 0;
+        padding: 0 1rem;
+        background: white;
+        position: relative;
+        z-index: 1;
+    }
+    form {
+        background: none;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+    }
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1.3rem;
+    }
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-text);
+        font-size: 1rem;
+    }
+    input, textarea, select {
+        padding: 0.9rem 1.2rem;
+        border: 1.5px solid var(--light-brown);
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: var(--cream);
+        color: var(--dark-text);
+        box-shadow: 0 2px 5px rgba(139,69,19,0.04);
+        font-family: 'Georgia', serif;
+    }
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.13);
+        background-color: #fff;
+    }
+    textarea {
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.5;
+    }
+    .error-message {
+        color: #d63031;
+        font-size: 0.9rem;
+        margin-top: 0.3rem;
+        font-weight: 500;
+    }
+    .read-button {
+        display: inline-block;
+        padding: 0.5rem 1.2rem;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        margin-top: 1.2rem;
+    }
+    .read-button:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+    @media (max-width: 768px) {
+        .encyclopedia-shelves {
+            padding: 1.2rem;
+        }
+        .encyclopedia-title {
+            font-size: 2rem;
+        }
+        input, textarea, select {
+            padding: 0.7rem 1rem;
+        }
+    }
+</style>
 {% endblock %} 

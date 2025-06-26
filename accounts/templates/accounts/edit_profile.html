@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Редактировать профиль{% endblock %}
+{% block content %}
+<div class="profile-wrapper">
+    <div class="profile-main">
+        <h1 class="profile-title">Редактировать профиль</h1>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                <label for="id_first_name">Имя</label>
+                {{ form.first_name }}
+                {{ form.first_name.errors }}
+            </div>
+            <div class="form-group">
+                <label for="id_last_name">Фамилия</label>
+                {{ form.last_name }}
+                {{ form.last_name.errors }}
+            </div>
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="{% url 'profile' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+<style>
+.profile-wrapper {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem 1rem;
+    background-color: #f9f5f0;
+    font-family: 'Georgia', serif;
+}
+.profile-main {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e0d6c9;
+}
+.profile-title {
+    font-size: 2rem;
+    color: #8B4513;
+    margin-bottom: 2rem;
+    font-weight: 700;
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #3E2723;
+}
+input[type="text"], input[type="email"] {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid #D2B48C;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #F5F5DC;
+    font-family: 'Georgia', serif;
+}
+input:focus {
+    outline: none;
+    border-color: #8B4513;
+    box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.15);
+}
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-right: 0.7rem;
+    transition: all 0.2s;
+}
+.btn-primary {
+    background: #8B4513;
+    color: #fff;
+    border: none;
+}
+.btn-primary:hover {
+    background: #A0522D;
+}
+.btn-secondary {
+    background: #e0d6c9;
+    color: #3E2723;
+    border: none;
+}
+.btn-secondary:hover {
+    background: #d2b48c;
+}
+</style>
+{% endblock %} 

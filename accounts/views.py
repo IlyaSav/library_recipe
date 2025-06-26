@@ -7,7 +7,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db import transaction, OperationalError
 from django.db.utils import DatabaseError
-from .forms import UserRegisterForm, UserLoginForm, RecipeForm, CommentForm, ArticleForm
+from .forms import UserRegisterForm, UserLoginForm, RecipeForm, CommentForm, ArticleForm, UserEditForm
 from .models import Recipe, Like, Comment, Favorite, Category, Article
 from .templatetags.custom_filters import censor
 import logging
@@ -458,3 +458,16 @@ def moderation_recipe_detail_view(request, recipe_id):
 def admin_recipes_table_view(request):
     recipes = Recipe.objects.select_related('author').prefetch_related('categories').order_by('-created_at')
     return render(request, 'accounts/admin_recipes_table.html', {'recipes': recipes})
+
+@login_required
+def edit_profile_view(request):
+    user = request.user
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Профиль успешно обновлён!')
+            return redirect('profile')
+    else:
+        form = UserEditForm(instance=user)
+    return render(request, 'accounts/edit_profile.html', {'form': form})

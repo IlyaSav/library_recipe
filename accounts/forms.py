@@ -134,3 +134,12 @@ class ArticleForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Тема статьи'}),
             'content': forms.Textarea(attrs={'class': 'form-input', 'placeholder': 'Текст статьи', 'rows': 8}),
         }
+
+class UserEditForm(forms.ModelForm):
+    email = forms.EmailField(required=True, label='Email', widget=forms.EmailInput(attrs={'autocomplete': 'email'}))
+    first_name = forms.CharField(required=True, label='Имя', widget=forms.TextInput(attrs={'autocomplete': 'given-name'}))
+    last_name = forms.CharField(required=True, label='Фамилия', widget=forms.TextInput(attrs={'autocomplete': 'family-name'}))
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name')
