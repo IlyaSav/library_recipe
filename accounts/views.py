@@ -171,7 +171,6 @@ def recipe_list_view(request):
     return render(request, 'accounts/recipe_list.html', context)
 
 @never_cache
-@login_required
 def recipe_detail_view(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     instructions_list = recipe.instructions.splitlines() if recipe.instructions else []
