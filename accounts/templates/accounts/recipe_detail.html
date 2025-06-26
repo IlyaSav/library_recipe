@@ -175,7 +175,14 @@
                         <div>
                             <h1 class="recipe-title">{{ recipe.title }}</h1>
                             <div class="d-flex align-items-center mb-3" style="gap:1.2rem;">
-                                <span class="text-muted">Автор: @{{ recipe.author.username }}</span>
+                                <span class="text-muted">
+                                    Автор: 
+                                    {% if recipe.author.first_name or recipe.author.last_name %}
+                                        {{ recipe.author.first_name }} {{ recipe.author.last_name }}
+                                    {% else %}
+                                        @{{ recipe.author.username }}
+                                    {% endif %}
+                                </span>
                                 {% if user.is_authenticated %}
                                     <button class="like-button" id="like-btn" data-liked="{{ is_liked|yesno:'1,0' }}" aria-label="Лайкнуть рецепт">
                                         <i class="fas fa-heart" style="color:{% if is_liked %}#e74c3c{% else %}#bbb{% endif %};"></i>

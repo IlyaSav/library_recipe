@@ -470,3 +470,16 @@ def edit_profile_view(request):
     else:
         form = UserEditForm(instance=user)
     return render(request, 'accounts/edit_profile.html', {'form': form})
+
+def home_view(request):
+    # Только одобренные рецепты
+    recipes_qs = Recipe.objects.filter(moderation_status='approved')
+    # 3 новых рецепта
+    new_recipes = recipes_qs.order_by('-created_at')[:3]
+    # 3 самых залайканных рецепта
+    popular_recipes = recipes_qs.annotate(likes_count=Count('likes')).order_by('-likes_count', '-created_at')[:3]
+    context = {
+        'new_recipes': new_recipes,
+        'popular_recipes': popular_recipes,
+    }
+    return render(request, 'accounts/home.html', context)
