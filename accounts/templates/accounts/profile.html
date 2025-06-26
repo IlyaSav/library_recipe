@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}🍳 Профиль пользователя | FoodGram{% endblock %}
+{% block meta_title %}Профиль пользователя — Кулинарная библиотека{% endblock %}
+{% block meta_description %}Ваш личный кабинет: рецепты, избранное, комментарии и настройки профиля.{% endblock %}
 
 {% block content %}
 <style>
@@ -316,7 +318,7 @@
                                     <span class="text-muted" style="font-size:0.92em; float:right;">{{ recipe.created_at|date:"d.m.Y H:i" }}</span>
                                 </div>
                                 {% if recipe.moderation_status == 'approved' %}
-                                    <a href="{% url 'recipe_detail' recipe.id %}" class="view-recipe-btn">Смотреть рецепт</a>
+                                    <a href="{% url 'recipe_detail' recipe.slug %}" class="view-recipe-btn">Смотреть рецепт</a>
                                 {% else %}
                                     <span class="view-recipe-btn" style="background:#ccc;cursor:not-allowed;pointer-events:none;">Смотреть рецепт</span>
                                 {% endif %}
@@ -353,7 +355,7 @@
                             <div class="recipe-content">
                                 <h3 class="recipe-title">{{ recipe.title }}</h3>
                                 <p class="recipe-description">{{ recipe.description|truncatechars:80 }}</p>
-                                <a href="{% url 'recipe_detail' recipe.id %}" class="view-recipe-btn">Смотреть рецепт</a>
+                                <a href="{% url 'recipe_detail' recipe.slug %}" class="view-recipe-btn">Смотреть рецепт</a>
                             </div>
                         </div>
                         {% endfor %}
@@ -387,7 +389,7 @@
                             <div class="recipe-content">
                                 <h3 class="recipe-title">{{ recipe.title }}</h3>
                                 <p class="recipe-description">{{ recipe.description|truncatechars:80 }}</p>
-                                <a href="{% url 'recipe_detail' recipe.id %}" class="view-recipe-btn">Смотреть рецепт</a>
+                                <a href="{% url 'recipe_detail' recipe.slug %}" class="view-recipe-btn">Смотреть рецепт</a>
                             </div>
                         </div>
                         {% endfor %}

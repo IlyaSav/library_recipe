@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.utils import timezone
 from django.db.models import Avg
+from django.utils.text import slugify
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -63,6 +64,8 @@ class Recipe(models.Model):
     ]
     moderation_status = models.CharField(max_length=10, choices=MODERATION_STATUS_CHOICES, default='pending')
 
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
+
     def __str__(self):
         return self.title
 
@@ -73,6 +76,17 @@ class Recipe(models.Model):
     @property
     def rating_count(self):
         return self.comments.count()
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.title)
+            slug = base_slug
+            n = 1
+            while Recipe.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{n}"
+                n += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)

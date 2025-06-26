@@ -2,6 +2,8 @@
 {% load custom_filters %}
 
 {% block title %}{{ recipe.title }}{% endblock %}
+{% block meta_title %}{{ recipe.title }} — Кулинарная библиотека{% endblock %}
+{% block meta_description %}{{ recipe.description|truncatechars:150 }}{% endblock %}
 
 {% block content %}
 <style>
@@ -357,6 +359,28 @@ $(function() {
         });
     });
 });
+</script>
+{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Recipe",
+  "name": "{{ recipe.title|escapejs }}",
+  "description": "{{ recipe.description|escapejs }}",
+  "image": "{{ recipe.image.url|default:'' }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ recipe.author.first_name }} {{ recipe.author.last_name }}"
+  },
+  "datePublished": "{{ recipe.created_at|date:'Y-m-d' }}",
+  "recipeIngredient": {{ recipe.ingredients|linebreaksbr|striptags|escapejs|safe|cut:'\r'|cut:'\n'|split:','|safe }},
+  "recipeInstructions": [
+    {% for step in instructions_list %}
+      {"@type": "HowToStep", "text": "{{ step|escapejs }}"}{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
 </script>
 {% endblock %}
 {% endblock %}

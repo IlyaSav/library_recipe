@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block title %}Главная — Кулинарная энциклопедия{% endblock %}
+{% block meta_title %}Кулинарная библиотека — лучшие домашние рецепты{% endblock %}
+{% block meta_description %}Добро пожаловать! Откройте для себя новые и популярные рецепты, делитесь любимыми блюдами и вдохновляйтесь каждый день.{% endblock %}
 
 {% block content %}
 <div class="encyclopedia-container">
@@ -22,10 +24,10 @@
         </div>
         <div class="book-grid">
             {% for recipe in new_recipes %}
-            <div class="recipe-book">
+            <div class="recipe-book" itemscope itemtype="https://schema.org/Recipe">
                 <div class="book-cover">
                     {% if recipe.image %}
-                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="book-image">
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="book-image" itemprop="image" loading="lazy">
                     {% else %}
                         <div class="book-image-placeholder">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
@@ -36,9 +38,9 @@
                     <div class="book-spine"></div>
                 </div>
                 <div class="book-info">
-                    <h3 class="book-title">{{ recipe.title }}</h3>
+                    <h3 class="book-title" itemprop="name">{{ recipe.title }}</h3>
                     <div class="book-meta">
-                        <span class="book-author">
+                        <span class="book-author" itemprop="author">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
                             </svg>
@@ -48,7 +50,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
                             </svg>
-                            {{ recipe.cook_time }} мин
+                            <span itemprop="cookTime">{{ recipe.cook_time }} мин</span>
                         </span>
                         <span class="book-rating">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#FFD700" viewBox="0 0 16 16">
@@ -57,8 +59,8 @@
                             {{ recipe.likes.count }}
                         </span>
                     </div>
-                    <p class="book-description">{{ recipe.description|truncatechars:120 }}</p>
-                    <a href="{% url 'recipe_detail' recipe.id %}" class="read-button">Открыть рецепт</a>
+                    <p class="book-description" itemprop="description">{{ recipe.description|truncatechars:120 }}</p>
+                    <a href="{% url 'recipe_detail' recipe.slug %}" class="read-button">Открыть рецепт</a>
                 </div>
             </div>
             {% empty %}
@@ -89,10 +91,10 @@
         </div>
         <div class="book-grid">
             {% for recipe in popular_recipes %}
-            <div class="recipe-book">
+            <div class="recipe-book" itemscope itemtype="https://schema.org/Recipe">
                 <div class="book-cover">
                     {% if recipe.image %}
-                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="book-image">
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="book-image" itemprop="image" loading="lazy">
                     {% else %}
                         <div class="book-image-placeholder">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
@@ -103,9 +105,9 @@
                     <div class="book-spine"></div>
                 </div>
                 <div class="book-info">
-                    <h3 class="book-title">{{ recipe.title }}</h3>
+                    <h3 class="book-title" itemprop="name">{{ recipe.title }}</h3>
                     <div class="book-meta">
-                        <span class="book-author">
+                        <span class="book-author" itemprop="author">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
                             </svg>
@@ -124,8 +126,8 @@
                             {{ recipe.likes.count }}
                         </span>
                     </div>
-                    <p class="book-description">{{ recipe.description|truncatechars:120 }}</p>
-                    <a href="{% url 'recipe_detail' recipe.id %}" class="read-button">Открыть рецепт</a>
+                    <p class="book-description" itemprop="description">{{ recipe.description|truncatechars:120 }}</p>
+                    <a href="{% url 'recipe_detail' recipe.slug %}" class="read-button">Открыть рецепт</a>
                 </div>
             </div>
             {% empty %}
