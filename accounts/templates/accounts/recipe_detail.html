@@ -137,6 +137,28 @@
     .star { color: #ddd; transition: color 0.2s; }
     .star.selected, .star:hover, .star:hover ~ .star { color: #FFD700; }
     select[name="rating"] { display: none; }
+    .edit-recipe-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 1.3rem;
+        background: #8B4513;
+        color: #fff !important;
+        border: none;
+        border-radius: 22px;
+        font-size: 1rem;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(139,69,19,0.07);
+        transition: background 0.2s, color 0.2s, transform 0.2s;
+        text-decoration: none;
+        margin-left: 0.5rem;
+    }
+    .edit-recipe-btn:hover {
+        background: #A0522D;
+        color: #fff;
+        transform: translateY(-2px) scale(1.04);
+        text-decoration: none;
+    }
 </style>
 
 <div class="recipe-detail-bg">
@@ -162,6 +184,12 @@
                                     <i class="fas fa-bookmark" style="color:{% if is_favorited %}#f4b400{% else %}#bbb{% endif %};"></i>
                                     <span id="favorites-count">{{ favorites_count }}</span>
                                 </button>
+                                {% if user == recipe.author %}
+                                    <a href="{% url 'recipe_edit' recipe.id %}" class="edit-recipe-btn ms-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="margin-right:6px;vertical-align:middle;"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>
+                                        Редактировать рецепт
+                                    </a>
+                                {% endif %}
                             </div>
                             <p class="lead mb-4">{{ recipe.description }}</p>
                             <div class="recipe-meta mb-4">
