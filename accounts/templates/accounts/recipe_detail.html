@@ -152,7 +152,17 @@
                     <div class="recipe-info h-100 d-flex flex-column justify-content-between">
                         <div>
                             <h1 class="recipe-title">{{ recipe.title }}</h1>
-                            <div class="text-muted mb-3">Автор: @{{ recipe.author.username }}</div>
+                            <div class="d-flex align-items-center mb-3" style="gap:1.2rem;">
+                                <span class="text-muted">Автор: @{{ recipe.author.username }}</span>
+                                <button class="like-button" id="like-btn" data-liked="{{ is_liked|yesno:'1,0' }}" aria-label="Лайкнуть рецепт">
+                                    <i class="fas fa-heart" style="color:{% if is_liked %}#e74c3c{% else %}#bbb{% endif %};"></i>
+                                    <span id="likes-count">{{ likes_count }}</span>
+                                </button>
+                                <button class="like-button" id="favorite-btn" data-favorited="{{ is_favorited|yesno:'1,0' }}" aria-label="Добавить в рекомендации">
+                                    <i class="fas fa-bookmark" style="color:{% if is_favorited %}#f4b400{% else %}#bbb{% endif %};"></i>
+                                    <span id="favorites-count">{{ favorites_count }}</span>
+                                </button>
+                            </div>
                             <p class="lead mb-4">{{ recipe.description }}</p>
                             <div class="recipe-meta mb-4">
                                 <div class="meta-item">
@@ -268,4 +278,38 @@ document.addEventListener('DOMContentLoaded', function() {
     highlightStars(Number(select.value));
 });
 </script>
+{% block extra_js %}
+<script>
+$(function() {
+    $('#like-btn').click(function(e) {
+        e.preventDefault();
+        var btn = $(this);
+        $.post("{% url 'toggle_like' recipe.id %}", {csrfmiddlewaretoken: '{{ csrf_token }}'}, function(data) {
+            if (data.liked) {
+                btn.find('i').css('color', '#e74c3c');
+                btn.attr('data-liked', '1');
+            } else {
+                btn.find('i').css('color', '#bbb');
+                btn.attr('data-liked', '0');
+            }
+            $('#likes-count').text(data.likes_count);
+        });
+    });
+    $('#favorite-btn').click(function(e) {
+        e.preventDefault();
+        var btn = $(this);
+        $.post("{% url 'toggle_favorite' recipe.id %}", {csrfmiddlewaretoken: '{{ csrf_token }}'}, function(data) {
+            if (data.is_favorited) {
+                btn.find('i').css('color', '#f4b400');
+                btn.attr('data-favorited', '1');
+            } else {
+                btn.find('i').css('color', '#bbb');
+                btn.attr('data-favorited', '0');
+            }
+            $('#favorites-count').text(data.favorites_count);
+        });
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}
