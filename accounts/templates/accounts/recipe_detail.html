@@ -249,26 +249,6 @@
         </div>
 
         <div class="section-card mb-5" id="comments">
-            <h3 class="section-title mb-4">Комментарии</h3>
-            {% if comments %}
-                {% for comment in comments %}
-                <div class="comment-card">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
-                        <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
-                    </div>
-                    <div class="mb-3">
-                        <span class="rating-badge">Оценка: {{ comment.rating }}</span>
-                    </div>
-                    <div class="comment-text">{{ comment.text|linebreaks }}</div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div class="no-comments mb-4">
-                    <i class="fas fa-comment-slash me-2"></i> Комментариев пока нет
-                </div>
-            {% endif %}
-            <hr class="my-4">
             <h4 class="section-title">Добавить комментарий</h4>
             {% if user.is_authenticated %}
                 <form method="post" class="mt-4">
@@ -296,6 +276,26 @@
             {% else %}
                 <div class="alert alert-warning mt-4" style="border-radius:12px;">
                     Чтобы оставить комментарий, <a href="{% url 'login' %}?next={{ request.path }}" style="color:#8B4513;font-weight:600;">войдите в аккаунт</a>.
+                </div>
+            {% endif %}
+            <hr class="my-4">
+            <h3 class="section-title mb-4">Комментарии</h3>
+            {% if comments %}
+                {% for comment in comments %}
+                <div class="comment-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
+                        <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="rating-badge">Оценка: {{ comment.rating }}</span>
+                    </div>
+                    <div class="comment-text">{{ comment.text|linebreaks }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-comments mb-4">
+                    <i class="fas fa-comment-slash me-2"></i> Комментариев пока нет
                 </div>
             {% endif %}
         </div>

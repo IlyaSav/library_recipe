@@ -519,6 +519,18 @@ def recipe_detail_by_id(request, pk):
         recipe_ingredients_list = [i.strip() for i in recipe.ingredients.replace('\r','').split('\n') if i.strip()]
     else:
         recipe_ingredients_list = []
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.recipe = recipe
+            comment.author = request.user
+            comment.text = censor(comment.text)
+            comment.save()
+            messages.success(request, 'Комментарий успешно добавлен.')
+            return redirect('recipe_detail_by_id', pk=recipe.id)
+    else:
+        form = CommentForm()
     comments = Comment.objects.filter(recipe=recipe).order_by('-created_at')
     for comment in comments:
         comment.text = censor(comment.text)
@@ -527,7 +539,6 @@ def recipe_detail_by_id(request, pk):
     if request.user.is_authenticated:
         is_liked = Like.objects.filter(user=request.user, recipe=recipe).exists()
         is_favorited = Favorite.objects.filter(user=request.user, recipe=recipe).exists()
-    form = CommentForm()
     context = {
         'recipe': recipe,
         'instructions_list': instructions_list,
@@ -551,6 +562,18 @@ def recipe_detail_by_slug_and_id(request, slug, pk):
         recipe_ingredients_list = [i.strip() for i in recipe.ingredients.replace('\r','').split('\n') if i.strip()]
     else:
         recipe_ingredients_list = []
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.recipe = recipe
+            comment.author = request.user
+            comment.text = censor(comment.text)
+            comment.save()
+            messages.success(request, 'Комментарий успешно добавлен.')
+            return redirect('recipe_detail_slug_id', slug=recipe.slug, pk=recipe.id)
+    else:
+        form = CommentForm()
     comments = Comment.objects.filter(recipe=recipe).order_by('-created_at')
     for comment in comments:
         comment.text = censor(comment.text)
@@ -559,7 +582,6 @@ def recipe_detail_by_slug_and_id(request, slug, pk):
     if request.user.is_authenticated:
         is_liked = Like.objects.filter(user=request.user, recipe=recipe).exists()
         is_favorited = Favorite.objects.filter(user=request.user, recipe=recipe).exists()
-    form = CommentForm()
     context = {
         'recipe': recipe,
         'instructions_list': instructions_list,
