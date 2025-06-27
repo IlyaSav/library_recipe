@@ -104,7 +104,13 @@ table.admin-table tr:hover {
                         <img src="https://via.placeholder.com/60x45?text=Нет+фото" class="admin-table-img" alt="Нет фото">
                     {% endif %}
                 </td>
-                <td><a href="{% url 'recipe_detail' recipe.slug %}" target="_blank">{{ recipe.title }}</a></td>
+                <td>
+                    {% if recipe.slug %}
+                        <a href="{% url 'recipe_detail' recipe.slug %}" target="_blank">{{ recipe.title }}</a>
+                    {% else %}
+                        <span class="text-muted" style="background:#eee;cursor:not-allowed;pointer-events:none;">{{ recipe.title }}</span>
+                    {% endif %}
+                </td>
                 <td>{{ recipe.author.first_name }} {{ recipe.author.last_name }}</td>
                 <td>{{ recipe.created_at|date:"d.m.Y H:i" }}</td>
                 <td><span class="admin-status {{ recipe.moderation_status }}">

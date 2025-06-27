@@ -4,7 +4,11 @@
   <form method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Удалить</button>
-    <a href="{% url 'recipe_detail' recipe.slug %}" class="btn btn-secondary">Отмена</a>
+    {% if recipe.slug %}
+      <a href="{% url 'recipe_detail' recipe.slug %}" class="btn btn-secondary">Отмена</a>
+    {% else %}
+      <span class="btn btn-secondary disabled" style="pointer-events:none;">Нет ссылки</span>
+    {% endif %}
   </form>
 {% include 'footer.html' %}
 {% endblock %}
