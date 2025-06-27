@@ -71,6 +71,13 @@ table.admin-table tr:hover {
 }
 </style>
 <div class="admin-table-container">
+    {% if messages %}
+      <div class="mb-3">
+        {% for message in messages %}
+          <div class="alert alert-success" style="border-radius:8px;">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
     <div class="admin-table-title">Все рецепты</div>
     <div style="overflow-x:auto;">
     <table class="admin-table">
@@ -112,6 +119,7 @@ table.admin-table tr:hover {
                     <a href="{% url 'recipe_edit' recipe.id %}" class="btn btn-warning btn-sm">Редактировать</a>
                     <form method="post" action="{% url 'recipe_delete' recipe.id %}" style="display:inline;">
                         {% csrf_token %}
+                        <input type="hidden" name="next" value="{% url 'admin_recipes_table' %}">
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить рецепт?');">Удалить</button>
                     </form>
                 </td>

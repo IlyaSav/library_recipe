@@ -174,6 +174,11 @@ def recipe_list_view(request):
 def recipe_detail_view(request, slug):
     recipe = get_object_or_404(Recipe, slug=slug)
     instructions_list = recipe.instructions.splitlines() if recipe.instructions else []
+    # Новый код: список ингредиентов для Schema.org
+    if recipe.ingredients:
+        recipe_ingredients_list = [i.strip() for i in recipe.ingredients.replace('\r','').split('\n') if i.strip()]
+    else:
+        recipe_ingredients_list = []
     
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -201,6 +206,7 @@ def recipe_detail_view(request, slug):
     context = {
         'recipe': recipe,
         'instructions_list': instructions_list,
+        'recipe_ingredients_list': recipe_ingredients_list,
         'user': request.user,
         'form': form,
         'comments': comments,
@@ -218,7 +224,7 @@ def recipe_edit_view(request, recipe_id):
     # Проверяем, является ли пользователь автором рецепта
     if request.user != recipe.author:
         messages.error(request, 'У вас нет прав для редактирования этого рецепта.')
-        return redirect('recipe_detail', recipe_id=recipe.slug)
+        return redirect('recipe_detail', slug=recipe.slug)
     
     if request.method == 'POST':
         form = RecipeForm(request.POST, request.FILES, instance=recipe)
@@ -228,7 +234,7 @@ def recipe_edit_view(request, recipe_id):
             recipe.save()
             form.save_m2m()  # Сохраняем связи many-to-many (категории)
             messages.success(request, 'Рецепт успешно обновлен.')
-            return redirect('recipe_detail', recipe_id=recipe.slug)
+            return redirect('recipe_detail', slug=recipe.slug)
     else:
         # Инициализируем форму с данными рецепта
         initial_data = {
@@ -309,12 +315,15 @@ def toggle_like(request, recipe_id):
 
 def recipe_delete_view(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
-    if request.user != recipe.author:
+    if request.user != recipe.author and not request.user.is_staff:
         messages.error(request, 'У вас нет прав для удаления этого рецепта.')
-        return redirect('recipe_detail', recipe_id=recipe.slug)
+        return redirect('recipe_detail', slug=recipe.slug)
     if request.method == 'POST':
         recipe.delete()
         messages.success(request, 'Рецепт успешно удалён.')
+        next_url = request.POST.get('next') or request.META.get('HTTP_REFERER')
+        if next_url and 'admin_recipes_table' in next_url:
+            return redirect('admin_recipes_table')
         return redirect('recipe_list')
     return render(request, 'accounts/recipe_confirm_delete.html', {'recipe': recipe})
 
@@ -371,7 +380,7 @@ def like_recipe(request, recipe_id):
     if not created:
         like.delete()
     
-    return redirect('recipe_detail', recipe_id=recipe.slug)
+    return redirect('recipe_detail', slug=recipe.slug)
 
 @login_required
 def favorite_recipe(request, recipe_id):
@@ -381,7 +390,7 @@ def favorite_recipe(request, recipe_id):
     if not created:
         favorite.delete()
     
-    return redirect('recipe_detail', recipe_id=recipe.slug)
+    return redirect('recipe_detail', slug=recipe.slug)
 
 def articles_list_view(request):
     articles = Article.objects.select_related('author').order_by('-created_at')

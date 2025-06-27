@@ -6,6 +6,7 @@
     <button type="submit" class="btn btn-danger">Удалить</button>
     <a href="{% url 'recipe_detail' recipe.slug %}" class="btn btn-secondary">Отмена</a>
   </form>
+{% include 'footer.html' %}
 {% endblock %}
 
 {% block meta_title %}Удалить рецепт — Кулинарная библиотека{% endblock %}

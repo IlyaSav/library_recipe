@@ -374,7 +374,11 @@ $(function() {
     "name": "{{ recipe.author.first_name }} {{ recipe.author.last_name }}"
   },
   "datePublished": "{{ recipe.created_at|date:'Y-m-d' }}",
-  "recipeIngredient": {{ recipe.ingredients|linebreaksbr|striptags|escapejs|safe|cut:'\r'|cut:'\n'|split:','|safe }},
+  "recipeIngredient": [
+    {% for ingredient in recipe_ingredients_list %}
+      "{{ ingredient|escapejs }}"{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ],
   "recipeInstructions": [
     {% for step in instructions_list %}
       {"@type": "HowToStep", "text": "{{ step|escapejs }}"}{% if not forloop.last %},{% endif %}
