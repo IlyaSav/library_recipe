@@ -13,6 +13,18 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ('email', 'first_name', 'last_name', 'password1', 'password2')
 
+    def clean_password1(self):
+        password = self.cleaned_data.get('password1')
+        import re
+        errors = []
+        if len(password or '') < 8:
+            errors.append('Пароль должен быть не менее 8 символов.')
+        if not re.search(r'[A-Za-z]', password or ''):
+            errors.append('Пароль должен содержать минимум одну английскую букву.')
+        if errors:
+            raise forms.ValidationError(errors)
+        return password
+
 class UserLoginForm(AuthenticationForm):
     username = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'autocomplete': 'username'}))
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'}))
