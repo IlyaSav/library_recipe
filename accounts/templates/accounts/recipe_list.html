@@ -115,7 +115,11 @@
                         </span>
                     </div>
                     <p class="book-description" itemprop="description">{{ recipe.description|truncatechars:120 }}</p>
-                    <a href="{% url 'recipe_detail' recipe.slug %}" class="read-button">Открыть рецепт</a>
+                    {% if recipe.slug %}
+                      <a href="{% url 'recipe_detail' recipe.slug %}" class="read-button">Открыть рецепт</a>
+                    {% else %}
+                      <span class="read-button" style="background:#ccc;cursor:not-allowed;pointer-events:none;">Нет ссылки</span>
+                    {% endif %}
                 </div>
             </div>
             {% empty %}
