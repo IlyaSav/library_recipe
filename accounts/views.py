@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db import transaction, OperationalError
@@ -20,6 +20,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 import random
 from datetime import datetime, timedelta
 from django.utils.decorators import method_decorator
+from django.utils.text import slugify
 
 logger = logging.getLogger(__name__)
 
@@ -231,10 +232,23 @@ def recipe_edit_view(request, recipe_id):
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.instructions = form.cleaned_data['steps']
+            # Гарантируем автогенерацию slug, если он пустой
+            if not recipe.slug:
+                base_slug = slugify(recipe.title)
+                slug = base_slug
+                i = 1
+                while Recipe.objects.filter(slug=slug).exclude(id=recipe.id).exists():
+                    slug = f"{base_slug}-{i}"
+                    i += 1
+                recipe.slug = slug
             recipe.save()
             form.save_m2m()  # Сохраняем связи many-to-many (категории)
             messages.success(request, 'Рецепт успешно обновлен.')
-            return redirect('recipe_detail', slug=recipe.slug)
+            if recipe.slug:
+                return redirect('recipe_detail', slug=recipe.slug)
+            else:
+                messages.error(request, 'Не удалось сгенерировать ссылку для рецепта. Проверьте название!')
+                return redirect('recipe_edit', recipe_id=recipe.id)
     else:
         # Инициализируем форму с данными рецепта
         initial_data = {
@@ -492,3 +506,70 @@ def home_view(request):
         'popular_recipes': popular_recipes,
     }
     return render(request, 'accounts/home.html', context)
+
+def recipe_detail_by_id(request, pk):
+    try:
+        recipe = Recipe.objects.get(pk=pk)
+    except Recipe.DoesNotExist:
+        return render(request, 'accounts/recipe_not_found.html', status=404)
+    if recipe.slug:
+        return redirect('recipe_detail', slug=recipe.slug)
+    instructions_list = recipe.instructions.splitlines() if recipe.instructions else []
+    if recipe.ingredients:
+        recipe_ingredients_list = [i.strip() for i in recipe.ingredients.replace('\r','').split('\n') if i.strip()]
+    else:
+        recipe_ingredients_list = []
+    comments = Comment.objects.filter(recipe=recipe).order_by('-created_at')
+    for comment in comments:
+        comment.text = censor(comment.text)
+    is_liked = False
+    is_favorited = False
+    if request.user.is_authenticated:
+        is_liked = Like.objects.filter(user=request.user, recipe=recipe).exists()
+        is_favorited = Favorite.objects.filter(user=request.user, recipe=recipe).exists()
+    form = CommentForm()
+    context = {
+        'recipe': recipe,
+        'instructions_list': instructions_list,
+        'recipe_ingredients_list': recipe_ingredients_list,
+        'user': request.user,
+        'form': form,
+        'comments': comments,
+        'is_liked': is_liked,
+        'likes_count': recipe.likes.count(),
+        'is_favorited': is_favorited,
+        'favorites_count': recipe.favorited_by.count()
+    }
+    return render(request, 'accounts/recipe_detail.html', context)
+
+def recipe_detail_by_slug_and_id(request, slug, pk):
+    recipe = get_object_or_404(Recipe, pk=pk)
+    if recipe.slug and recipe.slug != slug:
+        return redirect('recipe_detail_slug_id', slug=recipe.slug, pk=recipe.id)
+    instructions_list = recipe.instructions.splitlines() if recipe.instructions else []
+    if recipe.ingredients:
+        recipe_ingredients_list = [i.strip() for i in recipe.ingredients.replace('\r','').split('\n') if i.strip()]
+    else:
+        recipe_ingredients_list = []
+    comments = Comment.objects.filter(recipe=recipe).order_by('-created_at')
+    for comment in comments:
+        comment.text = censor(comment.text)
+    is_liked = False
+    is_favorited = False
+    if request.user.is_authenticated:
+        is_liked = Like.objects.filter(user=request.user, recipe=recipe).exists()
+        is_favorited = Favorite.objects.filter(user=request.user, recipe=recipe).exists()
+    form = CommentForm()
+    context = {
+        'recipe': recipe,
+        'instructions_list': instructions_list,
+        'recipe_ingredients_list': recipe_ingredients_list,
+        'user': request.user,
+        'form': form,
+        'comments': comments,
+        'is_liked': is_liked,
+        'likes_count': recipe.likes.count(),
+        'is_favorited': is_favorited,
+        'favorites_count': recipe.favorited_by.count()
+    }
+    return render(request, 'accounts/recipe_detail.html', context)

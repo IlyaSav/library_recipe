@@ -116,9 +116,9 @@
                     </div>
                     <p class="book-description" itemprop="description">{{ recipe.description|truncatechars:120 }}</p>
                     {% if recipe.slug %}
-                      <a href="{% url 'recipe_detail' recipe.slug %}" class="read-button">Открыть рецепт</a>
+                      <a href="{% url 'recipe_detail_slug_id' recipe.slug recipe.id %}" class="read-button">Открыть рецепт</a>
                     {% else %}
-                      <span class="read-button" style="background:#ccc;cursor:not-allowed;pointer-events:none;">Нет ссылки</span>
+                      <a href="{% url 'recipe_detail_by_id' recipe.id %}" class="read-button">Открыть рецепт</a>
                     {% endif %}
                 </div>
             </div>
