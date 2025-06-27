@@ -13,14 +13,22 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ('email', 'first_name', 'last_name', 'password1', 'password2')
 
+    def clean(self):
+        cleaned_data = super().clean()  # Важно вызывать родительский clean
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            self.add_error('password2', 'Пароли не совпадают.')
+        return cleaned_data
+
     def clean_password1(self):
         password = self.cleaned_data.get('password1')
         import re
         errors = []
         if len(password or '') < 8:
             errors.append('Пароль должен быть не менее 8 символов.')
-        if not re.search(r'[A-Za-z]', password or ''):
-            errors.append('Пароль должен содержать минимум одну английскую букву.')
+        if len(re.findall(r'[A-Za-z]', password or '')) < 2:
+            errors.append('Пароль должен содержать минимум две английские буквы.')
         if errors:
             raise forms.ValidationError(errors)
         return password
