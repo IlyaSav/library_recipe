@@ -30,7 +30,6 @@ def auth_view(request):
     login_success = False
     register_success = False
     login_error = None
-    register_error = None
 
     if request.method == 'POST':
         if 'login_submit' in request.POST:
@@ -48,14 +47,11 @@ def auth_view(request):
                 user.save()
                 login(request, user)
                 return redirect('recipe_list')
-            else:
-                register_error = 'Ошибка регистрации. Проверьте введённые данные.'
 
     return render(request, 'accounts/auth.html', {
         'login_form': login_form,
         'register_form': register_form,
         'login_error': login_error,
-        'register_error': register_error,
     })
 
 def login_view(request):
@@ -75,17 +71,14 @@ def login_view(request):
 
 def register_view(request):
     register_form = UserRegisterForm(request.POST or None)
-    register_error = None
     if request.method == 'POST':
         if register_form.is_valid():
             user = register_form.save()
             login(request, user)
             return redirect('recipe_list')
-        else:
-            register_error = 'Ошибка регистрации. Проверьте введённые данные.'
+
     return render(request, 'accounts/register.html', {
         'register_form': register_form,
-        'register_error': register_error,
     })
 
 @login_required

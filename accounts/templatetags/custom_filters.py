@@ -220,4 +220,31 @@ def censor(value):
     for pattern in CENSOR_PATTERNS:
         censored_text = pattern.sub(lambda m: '*' * len(m.group()), censored_text)
     
-    return censored_text 
+    return censored_text
+
+@register.filter(name='password_strength_label')
+def password_strength_label(password):
+    if not password:
+        return ''
+    length = len(password)
+    has_upper = any(c.isupper() for c in password)
+    has_lower = any(c.islower() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    has_special = any(not c.isalnum() for c in password)
+    score = 0
+    if length >= 8:
+        score += 1
+    if has_upper:
+        score += 1
+    if has_lower:
+        score += 1
+    if has_digit:
+        score += 1
+    if has_special:
+        score += 1
+    if score <= 2:
+        return 'короткий'
+    elif score == 3:
+        return 'средний'
+    else:
+        return 'надёжный' 
