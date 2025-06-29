@@ -150,14 +150,13 @@
 
 <style>
     :root {
-        --primary-color: #8B4513; /* Коричневый для книг */
+        --primary-color: #8B4513;
         --secondary-color: #A0522D;
         --light-brown: #D2B48C;
         --cream: #F5F5DC;
         --dark-text: #3E2723;
         --light-text: #5D4037;
     }
-
     .encyclopedia-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -165,7 +164,6 @@
         background-color: #f9f5f0;
         font-family: 'Georgia', serif;
     }
-
     .encyclopedia-header {
         display: flex;
         justify-content: space-between;
@@ -175,7 +173,6 @@
         border-bottom: 1px solid var(--light-brown);
         position: relative;
     }
-
     .encyclopedia-header::after {
         content: "";
         position: absolute;
@@ -185,7 +182,6 @@
         height: 1px;
         background: linear-gradient(90deg, transparent, var(--light-brown), transparent);
     }
-
     .encyclopedia-title {
         font-size: 2.8rem;
         color: var(--dark-text);
@@ -193,29 +189,24 @@
         font-weight: 700;
         letter-spacing: 1px;
     }
-
     .encyclopedia-subtitle {
         font-size: 1.2rem;
         color: var(--light-text);
         margin: 0.5rem 0 0 0;
         font-style: italic;
     }
-
     .library-icon {
         color: var(--primary-color);
         opacity: 0.7;
     }
-
     .encyclopedia-search {
         margin-bottom: 3rem;
     }
-
     .search-container {
         display: flex;
         max-width: 600px;
         margin: 0 auto 1.5rem;
     }
-
     .encyclopedia-search-input {
         flex: 1;
         padding: 0.8rem 1.2rem;
@@ -225,13 +216,11 @@
         background-color: var(--cream);
         font-family: 'Georgia', serif;
     }
-
     .encyclopedia-search-input:focus {
         outline: none;
         border-color: var(--primary-color);
         box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
     }
-
     .search-button {
         padding: 0 1.5rem;
         background: var(--primary-color);
@@ -241,25 +230,21 @@
         cursor: pointer;
         transition: all 0.3s ease;
     }
-
     .search-button:hover {
         background: var(--secondary-color);
     }
-
     .filter-tags {
         display: flex;
         justify-content: center;
         gap: 0.8rem;
         flex-wrap: wrap;
     }
-
     .category-filter-form {
         display: flex;
         flex-wrap: wrap;
         gap: 0.8rem;
         justify-content: center;
     }
-
     .filter-tag {
         padding: 0.5rem 1rem;
         background: white;
@@ -271,13 +256,11 @@
         text-decoration: none;
         color: var(--dark-text);
     }
-
     .filter-tag:hover, .filter-tag.active {
         background: var(--primary-color);
         color: white;
         border-color: var(--primary-color);
     }
-
     .encyclopedia-shelves {
         background: white;
         padding: 2rem;
@@ -285,13 +268,11 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         border: 1px solid #e0d6c9;
     }
-
     .shelf-header {
         margin-bottom: 2.5rem;
         position: relative;
         text-align: center;
     }
-
     .shelf-decoration {
         position: absolute;
         bottom: -10px;
@@ -300,7 +281,6 @@
         height: 1px;
         background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
     }
-
     .shelf-decoration::before {
         content: "";
         position: absolute;
@@ -310,7 +290,6 @@
         height: 1px;
         background: linear-gradient(90deg, transparent, #d3c9bb, transparent);
     }
-
     .shelf-title {
         display: inline-block;
         font-size: 1.8rem;
@@ -321,14 +300,12 @@
         position: relative;
         z-index: 1;
     }
-
     .book-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 2.2rem 2rem;
         margin-bottom: 2rem;
     }
-
     @media (max-width: 1200px) {
         .book-grid {
             grid-template-columns: repeat(3, 1fr);
@@ -344,7 +321,6 @@
             grid-template-columns: 1fr;
         }
     }
-
     .recipe-book {
         display: flex;
         flex-direction: column;
@@ -362,7 +338,6 @@
         transform: translateY(-3px) scale(1.015);
         z-index: 2;
     }
-
     .book-cover {
         width: 100%;
         height: 180px;
@@ -375,14 +350,12 @@
         justify-content: center;
         box-shadow: 0 2px 8px rgba(139,69,19,0.04);
     }
-
     .book-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
         border-radius: 10px;
     }
-
     .book-image-placeholder {
         width: 100%;
         height: 100%;
@@ -394,7 +367,6 @@
         border-radius: 10px;
         font-size: 2.2rem;
     }
-
     .book-spine {
         position: absolute;
         left: 0;
@@ -406,18 +378,15 @@
         transform-origin: right center;
         border-radius: 2px 0 0 2px;
     }
-
     .book-info {
         flex: 1;
     }
-
     .book-title {
         font-size: 1.2rem;
         color: var(--dark-text);
         margin: 0 0 0.5rem 0;
         font-weight: 600;
     }
-
     .book-meta {
         display: flex;
         gap: 1rem;
@@ -425,7 +394,6 @@
         font-size: 0.9rem;
         color: var(--light-text);
     }
-
     .book-author,
     .book-pages,
     .book-rating {
@@ -433,31 +401,25 @@
         align-items: center;
         gap: 0.4rem;
     }
-
     .book-author {
         color: var(--dark-text);
     }
-
     .book-pages {
         color: var(--dark-text);
     }
-
     .book-rating {
         color: var(--dark-text);
     }
-
     .book-rating svg {
         width: 14px;
         height: 14px;
     }
-
     .book-description {
         font-size: 0.95rem;
         line-height: 1.5;
         color: var(--light-text);
         margin-bottom: 1.2rem;
     }
-
     .read-button {
         display: inline-block;
         padding: 0.5rem 1.2rem;
@@ -468,18 +430,15 @@
         font-size: 0.9rem;
         transition: all 0.3s ease;
     }
-
     .read-button:hover {
         background: var(--secondary-color);
         transform: translateY(-2px);
     }
-
     .empty-library {
         grid-column: 1 / -1;
         text-align: center;
         padding: 2rem;
     }
-
     .empty-book {
         display: inline-flex;
         flex-direction: column;
@@ -487,12 +446,10 @@
         gap: 1.5rem;
         max-width: 300px;
     }
-
     .book-cover.empty {
         width: 150px;
         height: 200px;
     }
-
     .show-more-btn {
         display: flex;
         align-items: center;
@@ -506,13 +463,11 @@
         transition: all 0.3s ease;
         color: var(--dark-text);
     }
-
     .show-more-btn:hover {
         background: var(--primary-color);
         color: white;
         border-color: var(--primary-color);
     }
-
     .more-categories {
         display: none;
         flex-wrap: wrap;
@@ -522,77 +477,61 @@
         padding-top: 1rem;
         border-top: 1px solid var(--light-brown);
     }
-
     .more-categories.show {
         display: flex;
     }
-
     @media (max-width: 768px) {
         .encyclopedia-header {
             flex-direction: column;
             align-items: flex-start;
             gap: 1rem;
         }
-
         .library-icon {
             display: none;
         }
-
         .encyclopedia-title {
             font-size: 2.2rem;
         }
-
         .book-grid {
             grid-template-columns: 1fr;
         }
-
         .recipe-book {
             flex-direction: column;
         }
-
         .book-cover {
             width: 100%;
             height: 200px;
         }
-
         .book-spine {
             display: none;
         }
-
         .category-filter-form {
             flex-direction: column;
             align-items: center;
         }
-
         .filter-tag {
             width: 100%;
             text-align: center;
         }
-
         .show-more-btn {
             width: 100%;
             justify-content: center;
         }
     }
-
     @media (max-width: 480px) {
         .encyclopedia-title {
             font-size: 1.8rem;
         }
-
         .encyclopedia-shelves {
             padding: 1.5rem;
         }
-
         .search-container {
             flex-direction: column;
         }
-
         .encyclopedia-search-input {
             border-radius: 4px;
             margin-bottom: 0.5rem;
         }
-
         .search-button {
             border-radius: 4px;
             padding: 0.8rem;

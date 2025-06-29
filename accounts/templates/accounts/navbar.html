@@ -99,140 +99,171 @@
 <div style="height: 76px;"></div>
 
 <style>
-.navbar {
-    background: var(--card-bg);
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-    padding: 1rem 0;
+:root {
+    --primary-color: #8B4513;
+    --secondary-color: #A0522D;
+    --light-brown: #D2B48C;
+    --cream: #F5F5DC;
+    --dark-text: #3E2723;
+    --light-text: #5D4037;
 }
 
-/* Добавляем эффект при скролле */
+.navbar {
+    background: var(--cream);
+    box-shadow: 0 4px 18px rgba(139,69,19,0.07), 0 1.5px 6px rgba(139,69,19,0.04);
+    border-bottom: 1.5px solid var(--light-brown);
+    font-family: 'Georgia', serif;
+    padding: 1.1rem 0;
+    border-radius: 0 0 18px 18px;
+    transition: all 0.3s;
+}
+
 .navbar.scrolled {
-    padding: 0.75rem 0;
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(10px);
+    background: rgba(245, 245, 220, 0.97) !important;
+    box-shadow: 0 8px 32px rgba(139,69,19,0.13), 0 2px 8px rgba(139,69,19,0.08);
+    padding: 0.7rem 0;
+    backdrop-filter: blur(8px);
 }
 
 .navbar-brand {
-    font-weight: 600;
-    font-size: 20px;
-    color: var(--text-color) !important;
-    transition: all 0.3s ease;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--dark-text) !important;
+    letter-spacing: 1px;
+    transition: color 0.2s, transform 0.2s;
 }
 
 .navbar-brand:hover {
     color: var(--primary-color) !important;
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.04);
 }
 
 .nav-link {
     font-weight: 500;
-    font-size: 14px;
-    color: var(--text-color) !important;
-    padding: 0.5rem 1rem !important;
-    transition: all 0.3s ease;
+    font-size: 1rem;
+    color: var(--light-text) !important;
+    padding: 0.6rem 1.1rem !important;
+    border-radius: 8px;
+    transition: color 0.2s, background 0.2s, transform 0.2s;
     position: relative;
 }
 
-.nav-link:hover {
-    color: var(--primary-color) !important;
+.nav-link:hover, .nav-link.active {
+    color: #fff !important;
+    background: var(--primary-color);
     transform: translateY(-2px);
 }
 
 .nav-link::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: 6px;
     left: 50%;
     width: 0;
     height: 2px;
     background: var(--primary-color);
-    transition: all 0.3s ease;
+    transition: width 0.2s, left 0.2s;
     transform: translateX(-50%);
 }
 
-.nav-link:hover::after {
-    width: 80%;
+.nav-link:hover::after, .nav-link.active::after {
+    width: 70%;
 }
 
 .dropdown-menu {
-    border: none;
-    box-shadow: var(--shadow);
-    border-radius: 12px;
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    background: var(--card-bg);
+    border: 1.5px solid var(--light-brown);
+    box-shadow: 0 8px 32px rgba(139,69,19,0.13), 0 2px 8px rgba(139,69,19,0.08);
+    border-radius: 16px;
+    margin-top: 0.7rem;
+    padding: 0.7rem 0.3rem;
+    background: #fffbe9;
+    min-width: 220px;
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
 }
 
 .dropdown-item {
-    padding: 0.75rem 1rem;
-    font-size: 14px;
-    color: var(--text-color);
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    padding: 0.85rem 1.4rem;
+    font-size: 1.05rem;
+    color: var(--dark-text);
+    border-radius: 10px;
+    background: none;
+    margin: 0.1rem 0;
+    transition: background 0.18s, color 0.18s, transform 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
 }
 
-.dropdown-item:hover {
-    background-color: var(--bg-color);
-    color: var(--primary-color);
-    transform: translateX(4px);
+.dropdown-item:hover, .dropdown-item:focus {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: #fff;
+    transform: translateX(6px) scale(1.04);
 }
 
 .dropdown-item i {
-    width: 20px;
+    width: 22px;
     text-align: center;
-    color: var(--text-lighter);
+    color: var(--light-text);
+    font-size: 1.1em;
+    transition: color 0.18s;
 }
 
-.dropdown-item:hover i {
-    color: var(--primary-color);
+.dropdown-item:hover i, .dropdown-item:focus i {
+    color: #fff;
 }
 
 .dropdown-divider {
-    margin: 0.5rem 0;
-    border-color: var(--border-color);
+    margin: 0.7rem 0;
+    border-color: var(--light-brown);
+    border-width: 1.2px;
+    opacity: 0.7;
 }
 
 .navbar-toggler {
     border: none;
     padding: 0.5rem;
-    color: var(--text-color);
+    color: var(--primary-color);
 }
 
 .navbar-toggler:focus {
-    box-shadow: none;
+    box-shadow: 0 0 0 2px var(--primary-color);
     outline: none;
 }
 
 .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(51, 51, 51, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(139, 69, 19, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 @media (max-width: 991.98px) {
     .navbar-collapse {
         padding: 1rem 0;
-        background: var(--card-bg);
+        background: var(--cream);
         margin: 1rem -1rem -1rem;
         border-radius: 0 0 16px 16px;
-        box-shadow: var(--shadow);
+        box-shadow: 0 4px 18px rgba(139,69,19,0.07);
     }
-    
     .navbar-nav {
         gap: 0.5rem;
     }
-    
     .nav-link {
         padding: 0.75rem 1rem !important;
     }
-    
     .dropdown-menu {
         border: none;
         box-shadow: none;
         padding: 0.5rem 0;
         margin: 0;
-        background: var(--bg-color);
+        background: var(--cream);
     }
-
     .dropdown-item {
         padding: 0.75rem 1.5rem;
     }
@@ -240,11 +271,10 @@
 
 @media (max-width: 480px) {
     .navbar-brand {
-        font-size: 18px;
+        font-size: 1.1rem;
     }
-
     .nav-link {
-        font-size: 13px;
+        font-size: 0.95rem;
     }
 }
 

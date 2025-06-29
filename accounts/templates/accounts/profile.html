@@ -12,22 +12,14 @@
         --cream: #F5F5DC;
         --dark-text: #3E2723;
         --light-text: #5D4037;
+        --section-bg: #FFF9F0;
     }
 
-    .profile-wrapper {
+    .profile-container {
         max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem 1rem;
-        background-color: #f9f5f0;
+        margin: 2rem auto;
+        padding: 0 1rem;
         font-family: 'Georgia', serif;
-    }
-
-    .profile-main {
-        background: white;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e0d6c9;
     }
 
     .profile-header {
@@ -37,17 +29,6 @@
         margin-bottom: 2.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid var(--light-brown);
-        position: relative;
-    }
-
-    .profile-header::after {
-        content: "";
-        position: absolute;
-        bottom: -5px;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--light-brown), transparent);
     }
 
     .profile-title {
@@ -55,30 +36,67 @@
         color: var(--dark-text);
         margin: 0;
         font-weight: 700;
-        letter-spacing: 1px;
+        position: relative;
+        padding-left: 1.5rem;
     }
 
-    .edit-profile-btn {
+    .profile-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 8px;
+        height: 80%;
+        background: var(--primary-color);
+        border-radius: 4px;
+    }
+
+    .profile-actions .btn {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.5rem 1.2rem;
+        padding: 0.6rem 1.3rem;
         background: var(--primary-color);
         color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        font-size: 0.9rem;
+        border-radius: 6px;
+        font-size: 0.95rem;
         transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
     }
 
-    .edit-profile-btn:hover {
+    .profile-actions .btn:hover {
         background: var(--secondary-color);
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
     }
 
-    .edit-profile-btn svg {
-        width: 14px;
-        height: 14px;
+    .profile-layout {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+    }
+
+    @media (max-width: 992px) {
+        .profile-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Sidebar styles */
+    .profile-sidebar {
+        position: sticky;
+        top: 1rem;
+        height: fit-content;
+    }
+
+    .user-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem 1.5rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        border: 1px solid rgba(139, 69, 19, 0.1);
     }
 
     .user-avatar {
@@ -91,83 +109,139 @@
         justify-content: center;
         margin: 0 auto 1.5rem;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .avatar-placeholder {
-        font-size: 4rem;
         color: white;
-        font-weight: 700;
+        font-size: 3.5rem;
+        font-weight: 600;
     }
 
-    .user-info {
-        padding: 1.5rem;
-        background: var(--cream);
-        border-radius: 8px;
-        margin-bottom: 2rem;
-    }
-
-    .user-info p {
-        margin-bottom: 0.8rem;
-        font-size: 1rem;
+    .user-name {
+        font-size: 1.4rem;
         color: var(--dark-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .user-email {
+        color: var(--light-text);
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .user-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .stat-item {
+        background: var(--cream);
+        padding: 0.8rem;
+        border-radius: 8px;
+    }
+
+    .stat-value {
+        font-size: 1.3rem;
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: var(--light-text);
+    }
+
+    /* Main content styles */
+    .profile-content {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(139, 69, 19, 0.1);
+    }
+
+    .section-header {
         display: flex;
         justify-content: space-between;
-    }
-
-    .user-info p b {
-        font-weight: 600;
-        color: var(--primary-color);
+        align-items: center;
+        margin-bottom: 1.5rem;
     }
 
     .section-title {
         font-size: 1.5rem;
         color: var(--dark-text);
-        margin: 2rem 0 1.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--light-brown);
         position: relative;
+        padding-left: 1rem;
     }
 
-    .section-title::after {
+    .section-title::before {
         content: '';
         position: absolute;
-        bottom: -2px;
         left: 0;
-        width: 100px;
-        height: 2px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 70%;
         background: var(--primary-color);
+        border-radius: 2px;
     }
 
+    .section-link {
+        color: var(--primary-color);
+        font-size: 0.95rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        transition: all 0.2s ease;
+    }
+
+    .section-link:hover {
+        color: var(--secondary-color);
+        text-decoration: underline;
+    }
+
+    /* Recipe cards */
     .recipe-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 1.5rem;
-        margin-bottom: 3rem;
     }
 
     .recipe-card {
         background: white;
-        border-radius: 8px;
+        border-radius: 10px;
         overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
         transition: all 0.3s ease;
-        border: 1px solid #e0d6c9;
+        border: 1px solid rgba(139, 69, 19, 0.1);
     }
 
     .recipe-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .recipe-image-container {
+        height: 180px;
+        position: relative;
+        overflow: hidden;
     }
 
     .recipe-image {
         width: 100%;
-        height: 180px;
+        height: 100%;
         object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .recipe-card:hover .recipe-image {
+        transform: scale(1.05);
     }
 
     .recipe-image-placeholder {
         width: 100%;
-        height: 180px;
+        height: 100%;
         background: var(--cream);
         display: flex;
         align-items: center;
@@ -176,15 +250,23 @@
     }
 
     .recipe-content {
-        padding: 1.5rem;
+        padding: 1.3rem;
     }
 
     .recipe-title {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
         color: var(--dark-text);
         margin: 0 0 0.5rem 0;
         font-weight: 600;
-        line-height: 1.3;
+        line-height: 1.4;
+    }
+
+    .recipe-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.85rem;
+        color: var(--light-text);
     }
 
     .recipe-description {
@@ -192,135 +274,169 @@
         color: var(--light-text);
         margin-bottom: 1.2rem;
         line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
-    .view-recipe-btn {
+    .recipe-link {
         display: inline-block;
         padding: 0.5rem 1.2rem;
         background: var(--primary-color);
         color: white;
         text-decoration: none;
-        border-radius: 4px;
+        border-radius: 6px;
         font-size: 0.9rem;
         transition: all 0.3s ease;
     }
 
-    .view-recipe-btn:hover {
+    .recipe-link:hover {
         background: var(--secondary-color);
     }
 
+    /* Empty states */
     .empty-state {
         text-align: center;
-        padding: 2rem;
+        padding: 3rem 2rem;
         background: var(--cream);
-        border-radius: 8px;
-        margin-bottom: 2rem;
+        border-radius: 10px;
     }
 
-    .empty-state-icon {
-        font-size: 2rem;
+    .empty-icon {
+        font-size: 2.5rem;
         color: var(--light-text);
         margin-bottom: 1rem;
     }
 
-    .empty-state-text {
+    .empty-text {
         font-size: 1.1rem;
         color: var(--dark-text);
         margin-bottom: 1.5rem;
     }
 
+    /* Responsive adjustments */
     @media (max-width: 768px) {
         .profile-header {
             flex-direction: column;
             align-items: flex-start;
             gap: 1rem;
         }
-
+        
         .recipe-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .user-stats {
             grid-template-columns: 1fr;
         }
     }
 
     @media (max-width: 576px) {
-        .profile-main {
-            padding: 1.5rem;
-        }
-
         .profile-title {
             font-size: 1.8rem;
         }
-
+        
         .user-avatar {
             width: 120px;
             height: 120px;
-        }
-
-        .avatar-placeholder {
-            font-size: 3rem;
+            font-size: 2.5rem;
         }
     }
 </style>
 
-<div class="profile-wrapper">
-    <div class="profile-main">
-        <div class="profile-header">
-            <h1 class="profile-title">Мой профиль</h1>
-            <div class="profile-actions">
-                <a href="{% url 'edit_profile' %}" class="edit-profile-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                    </svg>
-                    Редактировать
-                </a>
-            </div>
+<div class="profile-container">
+    <div class="profile-header">
+        <h1 class="profile-title">Мой профиль</h1>
+        <div class="profile-actions">
+            <a href="{% url 'edit_profile' %}" class="btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                </svg>
+                Редактировать
+            </a>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-md-4">
+    <div class="profile-layout">
+        <!-- Sidebar -->
+        <aside class="profile-sidebar">
+            <div class="user-card">
                 <div class="user-avatar">
-                    <div class="avatar-placeholder">{{ user.first_name|default:"?"|first|upper }}{{ user.last_name|default:"?"|first|upper }}</div>
+                    {{ user.first_name|default:"?"|first|upper }}{{ user.last_name|default:"?"|first|upper }}
                 </div>
                 
-                <div class="user-info">
-                    <p><b>Имя:</b> <span>{{ user.first_name }}</span></p>
-                    <p><b>Фамилия:</b> <span>{{ user.last_name }}</span></p>
-                    <p><b>Email:</b> <span>{{ user.email }}</span></p>
-                    <p><b>Дата регистрации:</b> <span>{{ user.date_joined|date:"d.m.Y" }}</span></p>
-                    <p><b>Рецептов:</b> <span>{{ user.recipes.count }}</span></p>
-                    <p><b>Комментариев:</b> <span>{{ user.comments.count }}</span></p>
+                <h2 class="user-name">
+                    {% if user.first_name or user.last_name %}
+                        {{ user.first_name }} {{ user.last_name }}
+                    {% else %}
+                        Анонимный пользователь
+                    {% endif %}
+                </h2>
+                
+                <div class="user-email">{{ user.email }}</div>
+                
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">{{ user.recipes.count }}</div>
+                        <div class="stat-label">Рецептов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ user.comments.count }}</div>
+                        <div class="stat-label">Комментариев</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ user.date_joined|date:"d.m.Y" }}</div>
+                        <div class="stat-label">Дата регистрации</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ favorite_recipes.count }}</div>
+                        <div class="stat-label">В избранном</div>
+                    </div>
                 </div>
             </div>
+        </aside>
 
-            <div class="col-md-8">
-                <h2 class="section-title">Мои рецепты</h2>
+        <!-- Main content -->
+        <main class="profile-content">
+            <!-- My Recipes Section -->
+            <section class="profile-section">
+                <div class="section-header">
+                    <h2 class="section-title">Мои рецепты</h2>
+                    <a href="{% url 'recipe_create' %}" class="section-link">
+                        Добавить новый
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                    </a>
+                </div>
+                
                 {% if user_recipes %}
                     <div class="recipe-grid">
                         {% for recipe in user_recipes %}
-                        <div class="recipe-card" style="position:relative;">
-                            {% if recipe.image %}
-                                <img src="{{ recipe.image.url }}" class="recipe-image" alt="{{ recipe.title }}">
-                            {% else %}
-                                <div class="recipe-image-placeholder">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
-                                    </svg>
-                                </div>
-                            {% endif %}
-                            <div class="recipe-content">
-                                <h3 class="recipe-title">{{ recipe.title }}</h3>
-                                <p class="recipe-description">{{ recipe.description|truncatechars:80 }}</p>
-                                <div style="margin-bottom: 0.7em;">
-                                    <span class="moderation-status {{ recipe.moderation_status }}" style="font-size:0.95em;">
-                                        {% if recipe.moderation_status == 'pending' %}<i class="fas fa-hourglass-half me-1"></i> На модерации{% endif %}
-                                        {% if recipe.moderation_status == 'approved' %}<i class="fas fa-check me-1"></i> Одобрен{% endif %}
-                                        {% if recipe.moderation_status == 'rejected' %}<i class="fas fa-times me-1"></i> Отклонён{% endif %}
-                                    </span>
-                                    <span class="text-muted" style="font-size:0.92em; float:right;">{{ recipe.created_at|date:"d.m.Y H:i" }}</span>
-                                </div>
-                                {% if recipe.slug %}
-                                    <a href="{% url 'recipe_detail' recipe.slug %}" class="view-recipe-btn">Смотреть рецепт</a>
+                        <div class="recipe-card" itemscope itemtype="https://schema.org/Recipe">
+                            <div class="recipe-image-container">
+                                {% if recipe.image %}
+                                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe-image" itemprop="image" loading="lazy">
                                 {% else %}
-                                    <span class="view-recipe-btn" style="background:#ccc;cursor:not-allowed;pointer-events:none;">Нет ссылки</span>
+                                    <div class="recipe-image-placeholder">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="recipe-content">
+                                <h3 class="recipe-title" itemprop="name">{{ recipe.title }}</h3>
+                                <div class="recipe-meta">
+                                    <span itemprop="cookTime">{{ recipe.cook_time }} мин</span>
+                                    <span>{{ recipe.likes.count }} ♥</span>
+                                </div>
+                                <p class="recipe-description" itemprop="description">{{ recipe.description|truncatechars:120 }}</p>
+                                {% if recipe.slug %}
+                                    <a href="{% url 'recipe_detail_slug_id' recipe.slug recipe.id %}" class="recipe-link">Открыть рецепт</a>
+                                {% else %}
+                                    <a href="{% url 'recipe_detail_by_id' recipe.id %}" class="recipe-link">Открыть рецепт</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -328,37 +444,55 @@
                     </div>
                 {% else %}
                     <div class="empty-state">
-                        <div class="empty-state-icon">
+                        <div class="empty-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
                             </svg>
                         </div>
-                        <p class="empty-state-text">Вы ещё не создали ни одного рецепта</p>
-                        <a href="{% url 'recipe_create' %}" class="view-recipe-btn">Создать рецепт</a>
+                        <p class="empty-text">Вы ещё не создали ни одного рецепта</p>
+                        <a href="{% url 'recipe_create' %}" class="recipe-link">Создать первый рецепт</a>
                     </div>
                 {% endif %}
+            </section>
 
-                <h2 class="section-title">Избранные рецепты</h2>
+            <!-- Favorites Section -->
+            <section class="profile-section">
+                <div class="section-header">
+                    <h2 class="section-title">Избранное</h2>
+                    <a href="{% url 'recipe_list' %}" class="section-link">
+                        Все рецепты
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                        </svg>
+                    </a>
+                </div>
+                
                 {% if favorite_recipes %}
                     <div class="recipe-grid">
                         {% for recipe in favorite_recipes %}
-                        <div class="recipe-card">
-                            {% if recipe.image %}
-                                <img src="{{ recipe.image.url }}" class="recipe-image" alt="{{ recipe.title }}">
-                            {% else %}
-                                <div class="recipe-image-placeholder">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
-                                    </svg>
-                                </div>
-                            {% endif %}
-                            <div class="recipe-content">
-                                <h3 class="recipe-title">{{ recipe.title }}</h3>
-                                <p class="recipe-description">{{ recipe.description|truncatechars:80 }}</p>
-                                {% if recipe.slug %}
-                                    <a href="{% url 'recipe_detail' recipe.slug %}" class="view-recipe-btn">Смотреть рецепт</a>
+                        <div class="recipe-card" itemscope itemtype="https://schema.org/Recipe">
+                            <div class="recipe-image-container">
+                                {% if recipe.image %}
+                                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe-image" itemprop="image" loading="lazy">
                                 {% else %}
-                                    <span class="view-recipe-btn" style="background:#ccc;cursor:not-allowed;pointer-events:none;">Нет ссылки</span>
+                                    <div class="recipe-image-placeholder">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="recipe-content">
+                                <h3 class="recipe-title" itemprop="name">{{ recipe.title }}</h3>
+                                <div class="recipe-meta">
+                                    <span itemprop="cookTime">{{ recipe.cook_time }} мин</span>
+                                    <span>{{ recipe.likes.count }} ♥</span>
+                                </div>
+                                <p class="recipe-description" itemprop="description">{{ recipe.description|truncatechars:120 }}</p>
+                                {% if recipe.slug %}
+                                    <a href="{% url 'recipe_detail_slug_id' recipe.slug recipe.id %}" class="recipe-link">Открыть рецепт</a>
+                                {% else %}
+                                    <a href="{% url 'recipe_detail_by_id' recipe.id %}" class="recipe-link">Открыть рецепт</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -366,37 +500,55 @@
                     </div>
                 {% else %}
                     <div class="empty-state">
-                        <div class="empty-state-icon">
+                        <div class="empty-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
                             </svg>
                         </div>
-                        <p class="empty-state-text">У вас пока нет избранных рецептов</p>
-                        <a href="{% url 'recipe_list' %}" class="view-recipe-btn">Найти рецепты</a>
+                        <p class="empty-text">У вас пока нет избранных рецептов</p>
+                        <a href="{% url 'recipe_list' %}" class="recipe-link">Найти рецепты</a>
                     </div>
                 {% endif %}
+            </section>
 
-                <h2 class="section-title">Понравившиеся рецепты</h2>
+            <!-- Liked Recipes Section -->
+            <section class="profile-section">
+                <div class="section-header">
+                    <h2 class="section-title">Понравившиеся</h2>
+                    <a href="{% url 'recipe_list' %}?sort=popular" class="section-link">
+                        Популярные рецепты
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                        </svg>
+                    </a>
+                </div>
+                
                 {% if liked_recipes %}
                     <div class="recipe-grid">
                         {% for recipe in liked_recipes %}
-                        <div class="recipe-card">
-                            {% if recipe.image %}
-                                <img src="{{ recipe.image.url }}" class="recipe-image" alt="{{ recipe.title }}">
-                            {% else %}
-                                <div class="recipe-image-placeholder">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
-                                    </svg>
-                                </div>
-                            {% endif %}
-                            <div class="recipe-content">
-                                <h3 class="recipe-title">{{ recipe.title }}</h3>
-                                <p class="recipe-description">{{ recipe.description|truncatechars:80 }}</p>
-                                {% if recipe.slug %}
-                                    <a href="{% url 'recipe_detail' recipe.slug %}" class="view-recipe-btn">Смотреть рецепт</a>
+                        <div class="recipe-card" itemscope itemtype="https://schema.org/Recipe">
+                            <div class="recipe-image-container">
+                                {% if recipe.image %}
+                                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe-image" itemprop="image" loading="lazy">
                                 {% else %}
-                                    <span class="view-recipe-btn" style="background:#ccc;cursor:not-allowed;pointer-events:none;">Нет ссылки</span>
+                                    <div class="recipe-image-placeholder">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="recipe-content">
+                                <h3 class="recipe-title" itemprop="name">{{ recipe.title }}</h3>
+                                <div class="recipe-meta">
+                                    <span itemprop="cookTime">{{ recipe.cook_time }} мин</span>
+                                    <span>{{ recipe.likes.count }} ♥</span>
+                                </div>
+                                <p class="recipe-description" itemprop="description">{{ recipe.description|truncatechars:120 }}</p>
+                                {% if recipe.slug %}
+                                    <a href="{% url 'recipe_detail_slug_id' recipe.slug recipe.id %}" class="recipe-link">Открыть рецепт</a>
+                                {% else %}
+                                    <a href="{% url 'recipe_detail_by_id' recipe.id %}" class="recipe-link">Открыть рецепт</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -404,17 +556,17 @@
                     </div>
                 {% else %}
                     <div class="empty-state">
-                        <div class="empty-state-icon">
+                        <div class="empty-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1z"/>
                             </svg>
                         </div>
-                        <p class="empty-state-text">Вы еще не лайкнули ни одного рецепта</p>
-                        <a href="{% url 'recipe_list' %}" class="view-recipe-btn">Найти рецепты</a>
+                        <p class="empty-text">Вы еще не лайкнули ни одного рецепта</p>
+                        <a href="{% url 'recipe_list' %}" class="recipe-link">Найти рецепты</a>
                     </div>
                 {% endif %}
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
 </div>
 {% endblock %}
